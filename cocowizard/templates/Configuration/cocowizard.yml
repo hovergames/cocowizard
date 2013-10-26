@@ -1,0 +1,3 @@
+general:
+	project: {projectName}
+	package: {packageName}
