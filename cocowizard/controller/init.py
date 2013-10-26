@@ -30,7 +30,7 @@ def run():
     destination_dir = path(project_name)
     project_dir = destination_dir / "projects" / project_name
     if destination_dir.exists():
-        error("Directory '" + destination_dir + "' already exists.")
+        error("Directory '%s' already exists." % destination_dir)
 
     _clone_cocos2d_repo(destination_dir, args.cocos_repo_url, args.branch_name)
     _create_project_folder(project_dir)

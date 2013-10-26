@@ -54,7 +54,7 @@ def _add_git_submodule(avalon_dir):
 
 def _configure_android():
     for flavor in ["samsung", "google", "amazon"]:
-        base_dir = path("proj.android." + flavor)
+        base_dir = path("proj.android.%s" % flavor)
         _ensure_local_properties(base_dir, flavor)
         _update_android_mk(base_dir, flavor)
         _update_application_mk(base_dir, flavor)
@@ -67,7 +67,7 @@ def _ensure_local_properties(base_dir, flavor):
 
     for dst in [local, cocos]:
         dst = dst.realpath()
-        debug("write sdk.dir: " + dst)
+        debug("write sdk.dir: %s" % dst)
         dst.write_text(text)
 
 def _update_android_mk(base_dir, flavor):
@@ -100,7 +100,7 @@ def _update_android_mk(base_dir, flavor):
     text.append("$(call import-module,projects/%s/Vendors/avalon)" % config.get("general.project"))
     text.append("")
 
-    debug("configure: " + mk_file)
+    debug("configure: %s" % mk_file)
     mk_file.write_text("\n".join(text))
 
 def _avalon_features(flavor):
@@ -132,11 +132,11 @@ def _update_application_mk(base_dir, flavor):
         text += "APP_CPPFLAGS += -D%s=1\n" % define
     text += "APP_OPTIM := release\n"
 
-    debug("configure: " + mk_file)
+    debug("configure: %s" % mk_file)
     mk_file.write_text(text)
 
 def _get_android_defines(flavor):
-    defines = config.get("libraries.avalon.android." + flavor)
+    defines = config.get("libraries.avalon.android.%s" % flavor)
     if isinstance(defines, list):
         return defines
     else:

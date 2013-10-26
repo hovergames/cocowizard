@@ -26,7 +26,7 @@ def run():
             _configure(args.name)
 
 def _configure(library):
-    debug("configure library: " + library)
+    debug("configure library: %s" % library)
     try:
         module = __import__("cocowizard.library.%s" % library, fromlist=["cocowizard.library"])
         module.run()
