@@ -18,6 +18,7 @@ COCOWIZARD_PROJECT = "projects_cocowizard"
 
 def run():
     _patch_project_creator()
+    _remove_cocowizard_projects()
     _create_project()
     _remove_patched_project_creator()
     _move_project_files()
