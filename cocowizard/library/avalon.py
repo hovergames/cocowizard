@@ -8,8 +8,8 @@ from __future__ import unicode_literals
 from path import path
 from sh import git
 
-from ..cli import info, warning, debug
 from ..utils import config
+from ..utils.log import info, warning, debug
 
 AVALON_URL = "git@github.com:hovergames/avalon.git"
 DYNAMIC_LOCAL_SRC_FILES = """LOCAL_SRC_FILES := hellocpp/main.cpp \\

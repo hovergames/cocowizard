@@ -9,7 +9,8 @@ import argparse
 from sh import git, mkdir
 from path import path
 
-from ..cli import debug, error, info, root_dir
+from ..cli import root_dir
+from ..utils.log import debug, error, info
 
 TEMPLATES_DIR = root_dir() / "templates"
 

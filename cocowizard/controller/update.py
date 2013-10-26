@@ -9,7 +9,7 @@ import sh
 from path import path
 
 from ..utils import config
-from ..cli import debug
+from ..utils.log import debug
 from .recreate_projects import run as recreate_projects
 from .configure_libraries import run as configure_libraries
 

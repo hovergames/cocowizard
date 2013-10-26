@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 import argparse
 
 from ..utils import config
-from ..cli import debug, error
+from ..utils.log import debug, error
 
 def run():
     parser = argparse.ArgumentParser()
