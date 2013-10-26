@@ -11,7 +11,7 @@ from path import path
 from ..utils import config
 from ..cli import debug, error
 
-CREATOR_DIR = path("../../tools/project_creator").realpath()
+CREATOR_DIR = path("../../tools/project-creator").realpath()
 CREATOR_ORIG = (CREATOR_DIR / "create_project.py")
 CREATOR_WIZARD = (CREATOR_DIR / "create_project_wizard.py")
 COCOWIZARD_PROJECT = "projects_cocowizard"
