@@ -33,6 +33,7 @@ def run():
     _cloneCocos2dRepo(destinationDir, args.cocosRepoUrl, args.branchName)
     _createProjectFolders(projectDir)
     _createDefaultCocosbuilderProject(projectDir)
+    _createDefaultMetafiles(projectDir)
 
 def _cloneCocos2dRepo(destinationDir, cocosRepoUrl, branchName):
     for chunk in git("clone", "--verbose" ,"--branch", branchName, cocosRepoUrl, destinationDir, _iter = True, _out_bufsize = 1):
@@ -44,5 +45,5 @@ def _createProjectFolders(projectDir):
 def _createDefaultCocosbuilderProject(projectDir):
     path("cocowizard/templates/CocosBuilder").copytree(projectDir + "/Assets" + "/CocosBuilder")
 
-def _createDefaultCocosbuilderProject(projectDir):
+def _createDefaultMetafiles(projectDir):
     path("cocowizard/templates/Meta").copytree(projectDir + "/Meta")
