@@ -2,7 +2,13 @@ general:
     project: {project_name}
     package: {package_name}
 
-    android:
+    # Warning: The whole android node must be invisible or it would
+    #          override settings from ~/.cocowizard.yml with None!
+    # android:
+
+        # Hint: It's a good idea to configure this setting in the global
+        #       configuration ~/.cocowizard.yml and "cocowizard update" should
+        #       be avaibale directly after "cocowizard init" :)
         # sdk_dir: ~/android-sdk-macosx
 
 libraries:
