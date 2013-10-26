@@ -38,6 +38,7 @@ def run():
     _create_default_cocosbuilder_project(project_dir)
     _create_default_metafiles(project_dir)
     _create_default_configuration(project_dir, project_name, package_name)
+    _create_git_repo(project_dir)
 
 def _clone_cocos2d_repo(destination_dir, cocos_repo_url, branch_name):
     info("Initialize cocos2d-x repository")
@@ -61,3 +62,8 @@ def _create_default_configuration(project_dir, project_name, package_name):
     text = text.replace("{project_name}", project_name)
     text = text.replace("{package_name}", package_name)
     (project_dir / "cocowizard.yml").write_text(text)
+
+def _create_git_repo(project_dir):
+    git("init", _cwd=project_dir)
+    git("add", ".", _cwd=project_dir)
+    git("commit", m="cocowizard: initial commit", _cwd=project_dir)
