@@ -6,8 +6,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import argparse
-import os
-import shutil
 from sh import git, mkdir
 from path import path
 
