@@ -9,7 +9,7 @@ from path import path
 from yaml import load as yaml_load
 from copy import deepcopy
 
-from ..utils.log import error
+from .log import error
 
 CONFIG_NAME = "cocowizard.yml"
 CACHE = None
