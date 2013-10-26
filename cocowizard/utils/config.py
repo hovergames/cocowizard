@@ -33,7 +33,7 @@ def get(key):
     config = root()
 
     for part in parts:
-        if part not in config:
+        if not isinstance(config, dict) or part not in config:
             error(key + " is not configured yet")
         config = config[part]
 
