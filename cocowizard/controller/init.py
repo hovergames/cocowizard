@@ -8,28 +8,25 @@ from __future__ import unicode_literals
 import argparse
 import os
 import shutil
-
-from ..cli import info
-from ..cli import error
-from ..utils import config
-
-from sh import git
-from sh import mkdir
+from sh import git, mkdir
 from path import path
+
+from ..cli import info, error
+from ..utils import config
 
 TEMPLATES_DIR = path("cocowizard/templates").realpath()
 
 def run():
     parser = argparse.ArgumentParser()
-    parser.add_argument("packageName", 	help="Specify the package name.")
+    parser.add_argument("packageName", help="Specify the package name.")
     parser.add_argument("cocosRepoUrl", help="Specify the cocos2d-x git repository url.")
-    parser.add_argument("branchName", 	help="Which branch of cocos2d-x do you want to use?")
+    parser.add_argument("branchName", help="Which branch of cocos2d-x do you want to use?")
     args = parser.parse_args()
 
     packageName = args.packageName
     parts = packageName.split(".")
     if len(parts) < 2:
-    	error("Package name invalid: Use format com.company.projectName")
+        error("Package name invalid: Use format com.company.projectName")
 
     parts.pop(0)
     parts.pop(0)
@@ -38,8 +35,8 @@ def run():
     destinationDir = projectName
     projectDir = destinationDir + "/projects/" + projectName
 
-    if (os.path.exists(os.path.join(os.getcwd(), destinationDir))):
-	    error("Directory '" + destinationDir + "' already exists.")
+    if os.path.exists(os.path.join(os.getcwd(), destinationDir)):
+        error("Directory '" + destinationDir + "' already exists.")
 
     _cloneCocos2dRepo(destinationDir, args.cocosRepoUrl, args.branchName)
     _createProjectFolders(projectDir)
