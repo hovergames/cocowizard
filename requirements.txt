@@ -1,6 +1,6 @@
-PIL==1.1.7
+Pillow==2.2.1
 PyYAML==3.10
 argparse==1.2.1
-path.py==3.0.1
-sh==1.08
 colorama==0.2.7
+path.py==4.3
+sh==1.09
