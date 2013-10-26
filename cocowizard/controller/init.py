@@ -37,7 +37,7 @@ def run():
     _create_default_configuration(project_dir, project_name, package_name)
     _create_git_repo(project_dir)
 
-    info("Now go and run 'cocoswizard update' in your new project!")
+    info("Now go and run 'cocowizard update' in your new project!")
 
 def _clone_cocos2d_repo(destination_dir, cocos_repo_url, branch_name):
     debug("Initialize cocos2d-x repository")
