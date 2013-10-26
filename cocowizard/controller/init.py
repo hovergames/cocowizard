@@ -18,51 +18,48 @@ TEMPLATES_DIR = path("cocowizard/templates").realpath()
 
 def run():
     parser = argparse.ArgumentParser()
-    parser.add_argument("packageName", help="Specify the package name.")
-    parser.add_argument("cocosRepoUrl", help="Specify the cocos2d-x git repository url.")
-    parser.add_argument("branchName", help="Which branch of cocos2d-x do you want to use?")
+    parser.add_argument("package_name", help="Specify the package name.")
+    parser.add_argument("cocos_repo_url", help="Specify the cocos2d-x git repository url.")
+    parser.add_argument("branch_name", help="Which branch of cocos2d-x do you want to use?")
     args = parser.parse_args()
 
-    packageName = args.packageName
-    parts = packageName.split(".")
+    package_name = args.package_name
+    parts = package_name.split(".")
     if len(parts) < 2:
-        error("Package name invalid: Use format com.company.projectName")
+        error("Package name invalid: Use format com.company.project_name")
 
-    parts.pop(0)
-    parts.pop(0)
-    projectName = "".join(parts)
+    project_name = "".join(parts[2:])
 
-    destinationDir = projectName
-    projectDir = destinationDir + "/projects/" + projectName
+    destination_dir = path(project_name)
+    project_dir = destination_dir / "projects" / project_name
+    if destination_dir.exists():
+        error("Directory '" + destination_dir + "' already exists.")
 
-    if os.path.exists(os.path.join(os.getcwd(), destinationDir)):
-        error("Directory '" + destinationDir + "' already exists.")
+    _clone_cocos2d_repo(destination_dir, args.cocos_repo_url, args.branch_name)
+    _create_project_folders(project_dir)
+    _create_default_cocosbuilder_project(project_dir)
+    _create_default_metafiles(project_dir)
+    _create_default_configuration(project_dir, project_name, package_name)
 
-    _cloneCocos2dRepo(destinationDir, args.cocosRepoUrl, args.branchName)
-    _createProjectFolders(projectDir)
-    _createDefaultCocosbuilderProject(projectDir)
-    _createDefaultMetafiles(projectDir)
-    _createDefaulConfiguration(projectDir, projectName, packageName)
-
-def _cloneCocos2dRepo(destinationDir, cocosRepoUrl, branchName):
+def _clone_cocos2d_repo(destination_dir, cocos_repo_url, branch_name):
     info("Initialize cocos2d-x repository")
-    git("clone", "--verbose" ,"--branch", branchName, cocosRepoUrl, destinationDir)
+    git("clone", "--verbose" ,"--branch", branch_name, cocos_repo_url, destination_dir)
 
-def _createProjectFolders(projectDir):
+def _create_project_folders(project_dir):
     info("Initialize assets...")
-    path(projectDir + "/Assets").makedirs_p()
+    (project_dir / "Assets").makedirs_p()
 
-def _createDefaultCocosbuilderProject(projectDir):
+def _create_default_cocosbuilder_project(project_dir):
     info("Initialize CocosBuilder project")
-    path(TEMPLATES_DIR / "CocosBuilder").copytree(projectDir + "/Assets" + "/CocosBuilder")
+    path(TEMPLATES_DIR / "CocosBuilder").copytree(project_dir / "Assets" / "CocosBuilder")
 
-def _createDefaultMetafiles(projectDir):
+def _create_default_metafiles(project_dir):
     info("Initialize Metafiles")
-    path(TEMPLATES_DIR / "Meta").copytree(projectDir + "/Meta")
+    path(TEMPLATES_DIR / "Meta").copytree(project_dir / "Meta")
 
-def _createDefaulConfiguration(projectDir, projectName, packageName):
+def _create_default_configuration(project_dir, project_name, package_name):
     info("Initialize yaml configuration")
-    text = path(TEMPLATES_DIR / "Configuration/cocowizard.yml").text()
-    text = text.replace("{projectName}", projectName)
-    text = text.replace("{packageName}", packageName)
-    path(projectDir + "/cocowizard.yml").write_text(text)
+    text = (TEMPLATES_DIR / "Configuration/cocowizard.yml").text()
+    text = text.replace("{project_name}", project_name)
+    text = text.replace("{package_name}", package_name)
+    (project_dir / "cocowizard.yml").write_text(text)

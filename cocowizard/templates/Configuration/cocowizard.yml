@@ -1,6 +1,6 @@
 general:
-    project: {projectName}
-    package: {packageName}
+    project: {project_name}
+    package: {package_name}
 
     android:
         # sdk_dir: ~/android-sdk-macosx
