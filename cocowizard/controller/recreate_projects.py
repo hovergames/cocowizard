@@ -75,6 +75,12 @@ def _move_project_files():
         android_dir.copytree(proj_dir)
     android_dir.rmtree_p()
 
+    for from_other_dir in from_dir.glob("*"):
+        to_other_dir = to_dir / from_other_dir.name
+        if not to_other_dir.exists():
+            debug("import: " + from_other_dir)
+            from_other_dir.move(to_other_dir)
+
 def _remove_cocowizard_projects():
     projects_dir = path("../../" + COCOWIZARD_PROJECT).realpath()
     debug("remove: " + projects_dir)
