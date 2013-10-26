@@ -12,7 +12,7 @@ from path import path
 from ..cli import root_dir
 from ..utils.log import debug, error, info
 
-TEMPLATES_DIR = root_dir() / "templates"
+TEMPLATES_DIR = root_dir() / "cocowizard" / "templates"
 
 def run():
     parser = argparse.ArgumentParser()

@@ -25,4 +25,4 @@ def run():
         error("Invalid controller name given")
 
 def root_dir():
-    return (path(sys.argv[0]) / "..").abspath().dirname().realpath() / "cocowizard"
+    return (path(sys.argv[0]) / "..").abspath().dirname().realpath()
