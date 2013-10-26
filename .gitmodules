@@ -1,0 +1,3 @@
+[submodule "vendors/pbxplorer"]
+	path = vendors/pbxplorer
+	url = https://github.com/mjmsmith/pbxplorer.git
