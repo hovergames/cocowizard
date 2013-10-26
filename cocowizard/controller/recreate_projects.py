@@ -17,6 +17,8 @@ CREATOR_WIZARD = (CREATOR_DIR / "create_project_wizard.py")
 COCOWIZARD_PROJECT = "projects_cocowizard"
 
 def run():
+    config.fail_on_missing_config()
+
     _patch_project_creator()
     _remove_cocowizard_projects()
     _create_project()

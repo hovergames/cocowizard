@@ -14,6 +14,10 @@ from ..cli import error
 CONFIG_NAME = "cocowizard.yml"
 CACHE = None
 
+def fail_on_missing_config():
+    if not exists():
+        error("No project configuration found -- run init first")
+
 def exists():
     global CONFIG_NAME
     return path(CONFIG_NAME).exists()
@@ -51,8 +55,7 @@ def _dict_merge(a, b):
     return result
 
 def _load():
-    if not exists():
-        error("No project configuration found -- run init first")
+    fail_on_missing_config()
 
     global_config = dict()
     local_config = dict()
