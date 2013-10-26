@@ -26,6 +26,7 @@ def run():
 
 def error(message):
     print(Fore.RED + "[ERROR]", message, Style.RESET_ALL)
+    sys.exit()
 
 def warning(message):
     print(Fore.YELLOW + "[WARN]", message, Style.RESET_ALL)

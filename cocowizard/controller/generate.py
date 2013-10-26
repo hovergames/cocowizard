@@ -8,6 +8,7 @@ from __future__ import unicode_literals
 import argparse
 
 from ..cli import info
+from ..utils import config
 
 def run():
     parser = argparse.ArgumentParser()
@@ -15,3 +16,4 @@ def run():
     args = parser.parse_args()
 
     info(args.echo)
+    info(config.get("name"))
