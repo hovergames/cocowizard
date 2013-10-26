@@ -47,8 +47,8 @@ def _create_project():
     stdout = creator(p=project, k=package, l="cpp", _cwd=CREATOR_DIR)
 
     if "Have Fun!" not in stdout:
-        print(stdout)
-        error("Run of create_project.py failed -- see stdout above")
+        debug(stdout)
+        error("Run of create_project.py failed")
 
 def _remove_patched_project_creator():
     debug("remove: " + CREATOR_WIZARD)
