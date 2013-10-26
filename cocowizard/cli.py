@@ -43,4 +43,4 @@ def debug(message):
         print(Back.RED + Fore.BLACK + "[EXCEPTION]", message, Style.RESET_ALL)
         traceback.print_exc()
     else:
-        print(Fore.GREEN + "[DEBUG] ", message, Style.RESET_ALL)
+        print(Fore.GREEN + "[DEBUG]", message, Style.RESET_ALL)
