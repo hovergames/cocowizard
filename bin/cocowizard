@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+try:
+    import cocowizard
+except:
+    import sys, os
+    sys.path.append(
+        os.path.realpath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/..')
+    )
+
+from cocowizard.cli import run
+run()
