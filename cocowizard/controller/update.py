@@ -9,15 +9,17 @@ import sh
 from path import path
 
 from ..utils import config
-from ..utils.log import debug
+from ..utils.log import debug, indent
 from .recreate_projects import run as recreate_projects
 from .configure_libraries import run as configure_libraries
 
 def run():
     config.fail_on_missing_config()
 
-    debug(">>> recreate_projects")
-    recreate_projects()
+    debug("Run controller: recreate_projects")
+    with indent():
+        recreate_projects()
 
-    debug(">>> configure_libraries")
-    configure_libraries()
+    debug("Run controller: configure_libraries")
+    with indent():
+        configure_libraries()
