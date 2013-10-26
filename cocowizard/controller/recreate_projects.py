@@ -67,6 +67,13 @@ def _move_project_files():
         debug("import: " + proj_dir)
         proj_dir.move(to_dir)
 
+    android_dir = to_dir / "proj.android"
+    for android_flavor in ["samsung", "amazon", "google"]:
+        proj_dir = to_dir / "proj.android." + android_flavor
+        debug("copy: " + proj_dir)
+        android_dir.copytree(proj_dir)
+    android_dir.rmtree_p()
+
 def _remove_cocowizard_projects():
     projects_dir = path("../../" + COCOWIZARD_PROJECT).realpath()
     debug("remove: " + projects_dir)
