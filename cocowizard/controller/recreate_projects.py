@@ -78,4 +78,4 @@ def _move_project_files():
 def _remove_cocowizard_projects():
     projects_dir = path("../../" + COCOWIZARD_PROJECT).realpath()
     debug("remove: " + projects_dir)
-    projects_dir.rmtree()
+    projects_dir.rmtree_p()
