@@ -24,18 +24,18 @@ def run():
         debug(e)
         error("Invalid controller name given")
 
-def error(message, exit=True):
-    print(Fore.RED + "[ERROR]", message, Style.RESET_ALL)
+def error(message, exit=True, end="\n"):
+    print(Fore.RED + "[ERROR]", message, Style.RESET_ALL, end=end)
     if exit:
         sys.exit()
 
-def warning(message):
-    print(Fore.YELLOW + "[WARN]", message, Style.RESET_ALL)
+def warning(message, end="\n"):
+    print(Fore.YELLOW + "[WARN]", message, Style.RESET_ALL, end=end)
 
-def info(message):
-    print("[INFO]", message)
+def info(message, end="\n"):
+    print("[INFO]", message, end=end)
 
-def debug(message):
+def debug(message, end="\n"):
     if "DEBUG" not in os.environ:
         return
 
@@ -43,4 +43,4 @@ def debug(message):
         print(Back.RED + Fore.BLACK + "[EXCEPTION]", message, Style.RESET_ALL)
         traceback.print_exc()
     else:
-        print(Fore.GREEN + "[DEBUG]", message, Style.RESET_ALL)
+        print(Fore.GREEN + "[DEBUG]", message, Style.RESET_ALL, end=end)
