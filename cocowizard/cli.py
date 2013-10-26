@@ -18,15 +18,16 @@ def run():
         module = __import__("cocowizard.controller.%s" % controller, fromlist=["cocowizard.controller"])
         module.run()
     except IndexError as e:
-        error("No controller name given")
+        error("No controller name given", exit=False)
         debug(e)
     except ImportError as e:
-        error("Invalid controller name given")
+        error("Invalid controller name given", exit=False)
         debug(e)
 
-def error(message):
+def error(message, exit=True):
     print(Fore.RED + "[ERROR]", message, Style.RESET_ALL)
-    sys.exit()
+    if exit:
+        sys.exit()
 
 def warning(message):
     print(Fore.YELLOW + "[WARN]", message, Style.RESET_ALL)
