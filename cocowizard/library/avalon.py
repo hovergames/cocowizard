@@ -6,10 +6,10 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from path import path
-from sh import git
+from sh import git, cp
 
 from ..utils import config
-from ..utils.log import info, warning, debug
+from ..utils.log import info, warning, debug, indent
 
 AVALON_URL = "git@github.com:hovergames/avalon.git"
 DYNAMIC_LOCAL_SRC_FILES = """LOCAL_SRC_FILES := hellocpp/main.cpp \\
@@ -54,11 +54,13 @@ def _add_git_submodule(avalon_dir):
 
 def _configure_android():
     for flavor in ["samsung", "google", "amazon"]:
-        base_dir = path("proj.android.%s" % flavor)
-        _ensure_local_properties(base_dir, flavor)
-        _update_android_mk(base_dir, flavor)
-        _update_application_mk(base_dir, flavor)
-        _copy_java_files(base_dir, flavor)
+        debug("Configure avalon for android.%s" % flavor)
+        with indent():
+            base_dir = path("proj.android.%s" % flavor)
+            _ensure_local_properties(base_dir, flavor)
+            _update_android_mk(base_dir, flavor)
+            _update_application_mk(base_dir, flavor)
+            _copy_java_files(base_dir, flavor)
 
 def _ensure_local_properties(base_dir, flavor):
     local = base_dir / "local.properties"
@@ -67,7 +69,7 @@ def _ensure_local_properties(base_dir, flavor):
 
     for dst in [local, cocos]:
         dst = dst.realpath()
-        debug("write sdk.dir: %s" % dst)
+        debug("Write sdk.dir: %s" % dst)
         dst.write_text(text)
 
 def _update_android_mk(base_dir, flavor):
@@ -85,8 +87,7 @@ def _update_android_mk(base_dir, flavor):
             text.append("LOCAL_WHOLE_STATIC_LIBRARIES += avalon_static")
             text.append("")
             text.append(LOCAL_CFLAGS)
-            text.append(_avalon_features(flavor))
-            text.append(_avalon_flavor(flavor))
+            text.append("AVALON_PLATFORM_FLAVOR := %s" % flavor)
             text.append("")
             text.append(line)
         else:
@@ -100,26 +101,8 @@ def _update_android_mk(base_dir, flavor):
     text.append("$(call import-module,projects/%s/Vendors/avalon)" % config.get("general.project"))
     text.append("")
 
-    debug("configure: %s" % mk_file)
+    debug("Configure: %s" % mk_file)
     mk_file.write_text("\n".join(text))
-
-def _avalon_features(flavor):
-    defines_string = "\n".join(_get_android_defines(flavor))
-    features = []
-
-    if "AVALON_CONFIG_ADS_" in defines_string:
-        features.append("ads")
-
-    if "AVALON_CONFIG_GAMECENTER_" in defines_string:
-        features.append("gamecenter")
-
-    if "AVALON_CONFIG_PAYMENT_ENABLED" in defines_string:
-        features.append("payment")
-
-    return "AVALON_FEATURES := %s" % " ".join(features)
-
-def _avalon_flavor(flavor):
-    return "AVALON_PLATFORM_FLAVOR := %s" % flavor
 
 def _update_application_mk(base_dir, flavor):
     mk_file = base_dir / "jni" / "Application.mk"
@@ -132,8 +115,20 @@ def _update_application_mk(base_dir, flavor):
         text += "APP_CPPFLAGS += -D%s=1\n" % define
     text += "APP_OPTIM := release\n"
 
-    debug("configure: %s" % mk_file)
+    debug("Configure: %s" % mk_file)
     mk_file.write_text(text)
+
+def _get_avalon_features(flavor):
+    features = ["ui", "utils"]
+
+    for define in _get_android_defines(flavor):
+        if "_ENABLED" not in define:
+            continue
+
+        define = define.lower().replace("avalon_config_", "").replace("_enabled", "")
+        features.append(define)
+
+    return features
 
 def _get_android_defines(flavor):
     defines = config.get("libraries.avalon.android.%s" % flavor)
@@ -143,7 +138,37 @@ def _get_android_defines(flavor):
         return []
 
 def _copy_java_files(base_dir, flavor):
-    pass
+    android_dir = base_dir.parent.realpath() / "Vendors" / "avalon" / "avalon" / "platform" / "android"
+    flavor_dir = android_dir.parent.realpath() / "android-%s" % flavor
+    to_dir = base_dir.realpath()
+    force_amazon_gamecenter = _is_google_with_amazon_gamecenter(flavor)
+
+    for feature in _get_avalon_features(flavor):
+        feature_path = feature.replace("_", "/")
+
+        for from_dir in [android_dir, flavor_dir]:
+            from_dir = path(from_dir) / "_java" / feature_path
+            if feature == "gamecenter" and force_amazon_gamecenter:
+                debug("Forcing amazon gamecenter on google")
+                from_dir = path(from_dir.replace("-google", "-amazon"))
+
+            if from_dir.exists():
+                for subdir in from_dir.glob("*"):
+                    debug("Copy Java files: %s" % subdir)
+                    cp("-rf", subdir, to_dir)
+
+def _is_google_with_amazon_gamecenter(flavor):
+    if flavor != "google":
+        return False
+
+    defines = " ".join(_get_android_defines(flavor))
+    if "AVALON_CONFIG_GAMECENTER_USE_AMAZON_ON_GOOGLE" not in defines:
+        return False
+
+    if "AVALON_CONFIG_GAMECENTER_ENABLED" not in defines:
+        return False
+
+    return True
 
 def _configure_ios():
     pass
