@@ -9,6 +9,7 @@ import sys
 import os
 import traceback
 from colorama import Fore, Back, Style
+from path import path
 
 def run():
     try:
@@ -23,6 +24,9 @@ def run():
     except ImportError as e:
         debug(e)
         error("Invalid controller name given")
+
+def root_dir():
+    return (path(sys.argv[0]) / "..").abspath().dirname().realpath() / "cocowizard"
 
 def error(message, exit=True, end="\n"):
     print(Fore.RED + "[ERROR]", message, Style.RESET_ALL, end=end)

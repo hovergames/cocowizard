@@ -9,9 +9,9 @@ import argparse
 from sh import git, mkdir
 from path import path
 
-from ..cli import debug, error, info
+from ..cli import debug, error, info, root_dir
 
-TEMPLATES_DIR = path("cocowizard/templates").realpath()
+TEMPLATES_DIR = root_dir() / "templates"
 
 def run():
     parser = argparse.ArgumentParser()
