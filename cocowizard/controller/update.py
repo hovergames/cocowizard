@@ -10,7 +10,11 @@ from path import path
 
 from ..cli import debug
 from .recreate_projects import run as recreate_projects
+from .configure_libraries import run as configure_libraries
 
 def run():
     debug(">>> recreate_projects")
     recreate_projects()
+
+    debug(">>> configure_libraries")
+    configure_libraries()
