@@ -15,14 +15,13 @@ def run():
         controller = sys.argv[1]
         del sys.argv[1]
         sys.argv[0] += " " + controller
-        module = __import__("cocowizard.controller.%s" % controller, fromlist=["cocowizard.controller"])
-        module.run()
     except IndexError as e:
         debug(e)
-        error("No controller name given")
+        error("No controller name given. See 'cocowizard help'.")
+
+    try:
+        module = __import__("cocowizard.controller.%s" % controller, fromlist=["cocowizard.controller"])
+        module.run()
     except ImportError as e:
         debug(e)
-        error("Invalid controller name given")
-
-def root_dir():
-    return (path(sys.argv[0]) / "..").abspath().dirname().realpath()
+        error("Invalid controller name given. See 'cocowizard help'.")

@@ -38,16 +38,16 @@ def debug(message, end="\n"):
         _print(Fore.GREEN + "[DEBUG]", message, end=end)
 
 @contextmanager
-def indent():
+def indent(steps=2):
     global INDENT_LVL
     global INDENT_STR
 
-    INDENT_LVL += 2
+    INDENT_LVL += steps
     INDENT_STR += " " * INDENT_LVL
 
     yield
 
-    INDENT_LVL -= 2
+    INDENT_LVL = max(0, INDENT_LVL - steps)
     INDENT_STR = " " * INDENT_LVL
 
 def _print(prefix, message, end):

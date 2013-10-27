@@ -5,6 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import sys
 from path import path
 from yaml import load as yaml_load
 from copy import deepcopy
@@ -13,6 +14,9 @@ from .log import error
 
 CONFIG_NAME = "cocowizard.yml"
 CACHE = None
+
+def root_dir():
+    return (path(sys.argv[0]) / "..").abspath().dirname().realpath()
 
 def fail_on_missing_config():
     if not exists():

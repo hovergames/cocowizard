@@ -9,7 +9,7 @@ import argparse
 from sh import git, mkdir
 from path import path
 
-from ..cli import root_dir
+from ..utils.config import root_dir
 from ..utils.log import debug, error, info
 
 TEMPLATES_DIR = root_dir() / "cocowizard" / "templates"
