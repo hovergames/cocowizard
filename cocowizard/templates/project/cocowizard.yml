@@ -22,16 +22,22 @@ general:
 # >> another icon resolution for one store you have to update this file
 # >> _in every_ project managed with cocowizard. With the global configuration
 # >> this is reduced to only one file change :)
+
 icons:
     ios:
         settings:
             overlay: True
             mask: False
-            prerendered: True
         sizes:
+            29: png
+            40: png
+            50: png
             57: png
+            58: png
             72: png
             76: png
+            80: png
+            100: png
             114: png
             120: png
             144: png
@@ -42,6 +48,7 @@ icons:
             overlay: True
             mask: True
         sizes:
+            32: png
             36: png
             48: png
             72: png
@@ -52,6 +59,7 @@ icons:
             overlay: True
             mask: True
         sizes:
+            32: png
             36: png
             48: png
             72: png
@@ -63,6 +71,7 @@ icons:
             overlay: True
             mask: True
         sizes:
+            32: png
             36: png
             48: png
             72: png

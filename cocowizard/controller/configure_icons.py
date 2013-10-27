@@ -9,10 +9,10 @@ from itertools import ifilter, imap
 from functools import partial
 from path import path
 import sh
+import shutil
 
 from ..utils import config
 from ..utils.log import error, warning
-from ..utils.tools import monkeywizard
 
 def run():
     _configure_ios()
@@ -20,29 +20,17 @@ def run():
         _configure_android(flavor)
 
 def _configure_ios():
-    warning("iOS support currently disabled!")
-    return
-
     icons_dir = path("Meta/_generated/ios")
     if not icons_dir.exists():
-        error("No iOS icons generated yet -- try cocowizard generate_icons")
+        error("No ios icons generated yet -- try cocowizard generate_icons")
 
-    proj_dir = path("proj.ios_mac").realpath()
+    proj_dir = path("proj.ios_mac/ios").realpath()
     if not proj_dir.exists():
-        error("No iOS project generated yet -- try cocowizard update")
+        error("No ios project generated yet -- try cocowizard update")
 
-    prerendered = config.get("icons.ios.settings.prerendered")
-    store_icon = lambda x: "1024" not in x
-    single_quotes = lambda x: "'%s'" % x
-    realpath = lambda x : x.realpath()
-
-    files = icons_dir.glob("*")
-    files = ifilter(store_icon, files)
-    files = imap(realpath, files)
-    files = imap(single_quotes, files)
-    files = " ".join(files)
-
-    monkeywizard("IosIcons", single_quotes(proj_dir), int(prerendered), files)
+    sizes = [29, 40, 50, 57, 58, 72, 76, 80, 100, 114, 120, 144, 152]
+    for size in sizes:
+        shutil.copy(icons_dir + "/icon-" + str(size) + ".png" , proj_dir + "/Icon-" + str(size) + ".png")
 
 def _configure_android(flavor):
     icons_dir = path("Meta/_generated/android.%s" % flavor)
@@ -53,10 +41,6 @@ def _configure_android(flavor):
     if not proj_dir.exists():
         error("No android project generated yet -- try cocowizard update")
 
-    add_icon = partial(monkeywizard, "AndroidIcons", proj_dir)
-    get_icon = lambda x: icons_dir / "icon-%s.png" % x
-
-    add_icon("low", get_icon(36))
-    add_icon("medium", get_icon(48))
-    add_icon("high", get_icon(72))
-    add_icon("extra-high", get_icon(96))
+    icons = [[48, "mdpi"], [32, "ldpi"], [72, "hdpi"]]
+    for icon in icons:        
+        shutil.copy(icons_dir + "/icon-" + str(icon[0]) + ".png" , proj_dir + "/res/drawable-" + icon[1] + "/icon.png")
