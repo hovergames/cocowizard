@@ -11,6 +11,12 @@ general:
         # >> be avaibale directly after "cocowizard init" :)
         # sdk_dir: ~/android-sdk-macosx
 
+# >> All tool configurations should be managed in the global configuration
+# >> file ~/.cocowizard.yml aswell. Just read the docs for icons and/or
+# >> general.android.sdk_dir and you know why.
+# tools:
+    # monkeywizard: ~/monkey-wizard/wizard.build/stdcpp/main_macos
+
 # >> It's a good idea to move this whole section into the global configuration
 # >> too and only add / overwrite stuff here. Why? Because if you ever need
 # >> another icon resolution for one store you have to update this file

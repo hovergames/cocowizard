@@ -12,9 +12,7 @@ import sh
 
 from ..utils import config
 from ..utils.log import error, warning
-
-# TODO: Move this to utils.tools.monkeywizard!
-monkeywizard = sh.Command(path("$HOME/Workspace/private/monkey-wizard/wizard.build/stdcpp/main_macos").expand())
+from ..utils.tools import monkeywizard
 
 def run():
     _configure_ios()
