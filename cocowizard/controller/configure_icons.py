@@ -31,6 +31,12 @@ def _get_ios_path():
         error("No ios project generated yet -- try cocowizard update")
     return proj_dir
 
+def _get_ios_path():
+    proj_dir = path("proj.ios_mac/ios").realpath()
+    if not proj_dir.exists():
+        error("No ios project generated yet -- try cocowizard update")
+    return proj_dir
+
 def _configure_ios():
     icons_dir = path("Meta/_generated/ios")
     if not icons_dir.exists():
