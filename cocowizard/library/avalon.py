@@ -12,19 +12,14 @@ from ..utils import config
 from ..utils.log import info, warning, debug, indent
 
 AVALON_URL = "git@github.com:hovergames/avalon.git"
-DYNAMIC_LOCAL_SRC_FILES = """LOCAL_SRC_FILES := hellocpp/main.cpp \\
-    $(subst $(LOCAL_PATH)/,,$(wildcard $(LOCAL_PATH)/../../Classes/*.cpp)) \\
-    $(subst $(LOCAL_PATH)/,,$(wildcard $(LOCAL_PATH)/../../Classes/*/*.cpp)) \\
-    $(subst $(LOCAL_PATH)/,,$(wildcard $(LOCAL_PATH)/../../Classes/*/*/*.cpp)) """
-LOCAL_CFLAGS = """# enable c++11 support but "remove" the override specifier with a simple
-# preprocessor define - it's not supported yet :(
-LOCAL_CFLAGS += -std=c++11 -Doverride=
-"""
 
 def run():
     _ensure_installed()
     _configure_android()
-    _configure_ios()
+
+    debug("ios")
+    with indent():
+        _configure_ios()
 
 def _ensure_installed():
     vendors_dir = path("Vendors").realpath()
@@ -52,41 +47,38 @@ def _add_git_submodule(avalon_dir):
     for chunk in git("submodule", "update", "--init", "--recursive", _iter=True, _cwd=avalon_dir):
         info(chunk, end="")
 
+def _configure_ios():
+    defines = _get_defines("ios")
+    defines = map(lambda x: "#define %s" % x, defines)
+
+    for target in ["ios", "mac"]:
+        prefix_file = path("proj.ios_mac/%s/Prefix.pch" % target).realpath()
+        if not prefix_file.exists():
+            error("Prefix.pch for target %s not found" % target)
+
+        text = prefix_file.text().split("\n")
+        text = filter(lambda x: "AVALON_" not in x, text)
+        text.extend(defines)
+
+        debug("Configure: %s" % prefix_file)
+        prefix_file.write_text("\n".join(text))
+
 def _configure_android():
-    for flavor in ["samsung", "google", "amazon"]:
-        debug("Configure avalon for android.%s" % flavor)
+    for flavor in _get_android_targets():
+        debug("android.%s" % flavor)
         with indent():
             base_dir = path("proj.android.%s" % flavor)
-            _ensure_local_properties(base_dir, flavor)
             _update_android_mk(base_dir, flavor)
             _update_application_mk(base_dir, flavor)
             _copy_java_files(base_dir, flavor)
-
-def _ensure_local_properties(base_dir, flavor):
-    local = base_dir / "local.properties"
-    cocos = base_dir / "../../../cocos/2d/platform/android/java/local.properties"
-    text = "sdk.dir=%s\n" % config.get("general.android.sdk_dir")
-
-    for dst in [local, cocos]:
-        dst = dst.realpath()
-        debug("Write sdk.dir: %s" % dst)
-        dst.write_text(text)
 
 def _update_android_mk(base_dir, flavor):
     mk_file = base_dir / "jni" / "Android.mk"
     text = []
 
     for line in mk_file.text().split("\n"):
-        if "LOCAL_SRC_FILES" in line:
-            text.append(DYNAMIC_LOCAL_SRC_FILES)
-        elif "../../Classes/" in line:
-            pass
-        elif "BUILD_SHARED_LIBRARY" in line:
-            while not text[-1]:
-                del text[-1]
+        if "BUILD_SHARED_LIBRARY" in line:
             text.append("LOCAL_WHOLE_STATIC_LIBRARIES += avalon_static")
-            text.append("")
-            text.append(LOCAL_CFLAGS)
             text.append("AVALON_PLATFORM_FLAVOR := %s" % flavor)
             text.append("")
             text.append(line)
@@ -106,39 +98,16 @@ def _update_android_mk(base_dir, flavor):
 
 def _update_application_mk(base_dir, flavor):
     mk_file = base_dir / "jni" / "Application.mk"
-    text = mk_file.text()
 
-    text = text.replace("-DCOCOS2D_DEBUG=1", "-DCOCOS2D_DEBUG=0")
-    text += "APP_CPPFLAGS += -O3\n"
-    text += "APP_CPPFLAGS += -DNDEBUG\n"
-    for define in _get_android_defines(flavor):
+    text = mk_file.text()
+    for define in _get_defines("android.%s" % flavor):
         text += "APP_CPPFLAGS += -D%s=1\n" % define
-    text += "APP_OPTIM := release\n"
 
     debug("Configure: %s" % mk_file)
     mk_file.write_text(text)
 
-def _get_avalon_features(flavor):
-    features = ["ui", "utils"]
-
-    for define in _get_android_defines(flavor):
-        if "_ENABLED" not in define:
-            continue
-
-        define = define.lower().replace("avalon_config_", "").replace("_enabled", "")
-        features.append(define)
-
-    return features
-
-def _get_android_defines(flavor):
-    defines = config.get("libraries.avalon.android.%s" % flavor)
-    if isinstance(defines, list):
-        return defines
-    else:
-        return []
-
 def _copy_java_files(base_dir, flavor):
-    android_dir = base_dir.parent.realpath() / "Vendors" / "avalon" / "avalon" / "platform" / "android"
+    android_dir = base_dir.parent.realpath() / "Vendors/avalon/avalon/platform/android"
     flavor_dir = android_dir.parent.realpath() / "android-%s" % flavor
     to_dir = base_dir.realpath()
     force_amazon_gamecenter = _is_google_with_amazon_gamecenter(flavor)
@@ -157,11 +126,23 @@ def _copy_java_files(base_dir, flavor):
                     debug("Copy Java files: %s" % subdir)
                     cp("-rf", subdir, to_dir)
 
+def _get_avalon_features(flavor):
+    features = ["ui", "utils"]
+
+    for define in _get_defines("android.%s" % flavor):
+        if "_ENABLED" not in define:
+            continue
+
+        define = define.lower().replace("avalon_config_", "").replace("_enabled", "")
+        features.append(define)
+
+    return features
+
 def _is_google_with_amazon_gamecenter(flavor):
     if flavor != "google":
         return False
 
-    defines = " ".join(_get_android_defines(flavor))
+    defines = " ".join(_get_defines("android.%s" % flavor))
     if "AVALON_CONFIG_GAMECENTER_USE_AMAZON_ON_GOOGLE" not in defines:
         return False
 
@@ -170,5 +151,16 @@ def _is_google_with_amazon_gamecenter(flavor):
 
     return True
 
-def _configure_ios():
-    pass
+def _get_android_targets():
+    key = "libraries.avalon.android"
+    if config.has(key):
+        return config.get(key).keys()
+    else:
+        return []
+
+def _get_defines(target):
+    defines = config.get("libraries.avalon.%s" % target)
+    if isinstance(defines, list):
+        return defines
+    else:
+        return []

@@ -12,7 +12,8 @@ from ..utils import config
 from ..utils.log import debug, indent
 from .configure_icons import run as configure_icons
 from .configure_libraries import run as configure_libraries
-from .generate_icons import run as icons
+from .configure_projects import run as configure_projects
+from .generate_icons import run as generate_icons
 from .recreate_projects import run as recreate_projects
 
 def run():
@@ -22,13 +23,17 @@ def run():
     with indent():
         recreate_projects()
 
+    debug("Run controller: configure_projects")
+    with indent():
+        configure_projects()
+
     debug("Run controller: configure_libraries")
     with indent():
         configure_libraries()
 
-    debug("Run controller: icons")
+    debug("Run controller: generate_icons")
     with indent():
-        icons()
+        generate_icons()
 
     debug("Run controller: configure_icons")
     with indent():
