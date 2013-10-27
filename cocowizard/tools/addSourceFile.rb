@@ -1,8 +1,8 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 require 'rubygems'
 require 'json'
-require '../../../../../vendors/pbxplorer/lib/pbxplorer'
+require '../../vendors/pbxplorer/lib/pbxplorer'
 
 arguments = ARGV
 
@@ -46,7 +46,7 @@ def createGroup(folders)
             newgroup = $project_file.new_object PBXGroup,{"name" => folder, "children" => [], "sourceTree" => type}
             $project_file.add_object newgroup
             group["children"] << newgroup.uuid
-            group = newgroup    
+            group = newgroup
         end
         type = "<group>"
     end
@@ -63,7 +63,7 @@ def addFile(path)
     parts = path.split("/")
     if parts.length > 1
         fileName = parts.pop
-        group = createGroup(parts)  
+        group = createGroup(parts)
         type = "<group>"
     end
 
@@ -83,8 +83,8 @@ def addFile(path)
         build_file = $project_file.new_object PBXBuildFile, { "fileRef" => file_ref.uuid }
 
         build_phases = $project_file.objects_of_class PBXSourcesBuildPhase
-        build_phases.each do |phase| 
-            phase["files"] << build_file.uuid 
+        build_phases.each do |phase|
+            phase["files"] << build_file.uuid
         end
     end
 
