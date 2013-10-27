@@ -18,19 +18,25 @@ def run():
     debug("ios")
     with indent():
         _configure_ios()
+        _configure_launch_images_ios()
+    
     for flavor in ["amazon", "google", "samsung"]:
         debug("android.%s" % flavor)
         with indent():
             _configure_android(flavor)
+
+def _get_ios_path():
+    proj_dir = path("proj.ios_mac/ios").realpath()
+    if not proj_dir.exists():
+        error("No ios project generated yet -- try cocowizard update")
+    return proj_dir
 
 def _configure_ios():
     icons_dir = path("Meta/_generated/ios")
     if not icons_dir.exists():
         error("No ios icons generated yet -- try cocowizard generate_icons")
 
-    proj_dir = path("proj.ios_mac/ios").realpath()
-    if not proj_dir.exists():
-        error("No ios project generated yet -- try cocowizard update")
+    proj_dir = _get_ios_path()
 
     for size in IOS_SIZES:
         icon_from = icons_dir / ("icon-%s.png" % size)
@@ -41,6 +47,17 @@ def _configure_ios():
 
         debug("Copy: %s" % icon_to)
         icon_from.copy(icon_to)
+
+def _configure_launch_images_ios():
+    proj_dir = _get_ios_path()
+
+    source_dir = path("Meta/launch_images/")
+    if not source_dir.exists():
+        error("Launch images not generated yet -- try cocowizard generate_icons")
+
+    images = ["Default.png", "Default-568h@2x.png", "Default@2x.png"]
+    for image in images:
+        shutil.copy(source_dir / image, proj_dir / image)
 
 def _configure_android(flavor):
     icons_dir = path("Meta/_generated/android.%s" % flavor)
