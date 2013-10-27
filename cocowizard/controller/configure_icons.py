@@ -57,7 +57,7 @@ def _configure_launch_images_ios():
 
     images = ["Default.png", "Default-568h@2x.png", "Default@2x.png"]
     for image in images:
-        shutil.copy(source_dir / image, proj_dir / image)
+        (source_dir / image).copy(proj_dir / image)
 
 def _configure_android(flavor):
     icons_dir = path("Meta/_generated/android.%s" % flavor)
