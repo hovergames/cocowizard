@@ -12,6 +12,7 @@ from ..utils import config
 from ..utils.log import debug, indent
 from .recreate_projects import run as recreate_projects
 from .configure_libraries import run as configure_libraries
+from .icons import run as icons
 
 def run():
     config.fail_on_missing_config()
@@ -23,3 +24,7 @@ def run():
     debug("Run controller: configure_libraries")
     with indent():
         configure_libraries()
+
+    debug("Run controller: icons")
+    with indent():
+        icons()
