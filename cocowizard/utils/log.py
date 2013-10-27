@@ -43,7 +43,7 @@ def indent(steps=2):
     global INDENT_STR
 
     INDENT_LVL += steps
-    INDENT_STR += " " * INDENT_LVL
+    INDENT_STR = " " * INDENT_LVL
 
     yield
 
