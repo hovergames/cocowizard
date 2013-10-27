@@ -22,7 +22,6 @@ general:
 # >> another icon resolution for one store you have to update this file
 # >> _in every_ project managed with cocowizard. With the global configuration
 # >> this is reduced to only one file change :)
-
 icons:
     ios:
         settings:
