@@ -10,9 +10,10 @@ from path import path
 
 from ..utils import config
 from ..utils.log import debug, indent
-from .recreate_projects import run as recreate_projects
+from .configure_icons import run as configure_icons
 from .configure_libraries import run as configure_libraries
 from .generate_icons import run as icons
+from .recreate_projects import run as recreate_projects
 
 def run():
     config.fail_on_missing_config()
@@ -28,3 +29,7 @@ def run():
     debug("Run controller: icons")
     with indent():
         icons()
+
+    debug("Run controller: configure_icons")
+    with indent():
+        configure_icons()
