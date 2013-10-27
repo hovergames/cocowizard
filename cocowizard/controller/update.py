@@ -15,6 +15,7 @@ from .configure_libraries import run as configure_libraries
 from .configure_projects import run as configure_projects
 from .generate_icons import run as generate_icons
 from .recreate_projects import run as recreate_projects
+from .configure_package import run as configure_package
 
 def run():
     config.fail_on_missing_config()
@@ -25,6 +26,7 @@ def run():
         configure_projects,
         generate_icons,
         configure_icons,
+        configure_package
     ]
 
     for step in steps:

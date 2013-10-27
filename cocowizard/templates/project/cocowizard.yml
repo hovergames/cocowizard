@@ -1,6 +1,7 @@
 general:
     project: {project_name}
     package: {package_name}
+    version: 1.0
 
     # >> Warning: The whole android node must, if it's empty, be invisible or
     # >>          it would override settings from ~/.cocowizard.yml with None!
