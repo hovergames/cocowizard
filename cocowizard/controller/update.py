@@ -19,22 +19,16 @@ from .recreate_projects import run as recreate_projects
 def run():
     config.fail_on_missing_config()
 
-    debug("Run controller: recreate_projects")
-    with indent():
-        recreate_projects()
+    steps = [
+        recreate_projects,
+        configure_libraries,
+        configure_projects,
+        generate_icons,
+        configure_icons,
+    ]
 
-    debug("Run controller: configure_projects")
-    with indent():
-        configure_projects()
-
-    debug("Run controller: configure_libraries")
-    with indent():
-        configure_libraries()
-
-    debug("Run controller: generate_icons")
-    with indent():
-        generate_icons()
-
-    debug("Run controller: configure_icons")
-    with indent():
-        configure_icons()
+    for step in steps:
+        name = step.__module__.split(".")[-1]
+        debug("Run controller: %s" % name)
+        with indent():
+            step()
