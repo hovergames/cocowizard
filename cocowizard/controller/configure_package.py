@@ -13,15 +13,34 @@ from ..utils.log import error, debug, indent
 
 XCODE_FILE = config.get("general.project") + ".xcodeproj/project.pbxproj"
 PLIST_FILE = "ios/Info.plist"
+
 def run():
     configure_ios_package_name()
     configure_ios_version()
+    configure_ios_orientation()
 
 def get_proj_dir():
     proj_dir = path("proj.ios_mac").realpath()
     if not proj_dir.exists():
         error("No ios project generated yet -- try cocowizard update")
     return proj_dir
+
+def configure_ios_orientation():
+    plist_file = get_proj_dir() / PLIST_FILE
+
+    text = plist_file.text()
+
+    orientation = config.get("general.orientation")
+
+    if orientation == "landscape":
+        pass
+    elif orientation == "portrait":
+        text = text.replace("UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationPortrait")
+        text = text.replace("UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationPortraitUpsideDown")
+    else:
+        error("Orientation in configuration is invalid.")
+
+    plist_file.write_text(text)
 
 def configure_ios_package_name():
     project = config.get("general.project")
