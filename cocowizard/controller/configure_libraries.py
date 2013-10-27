@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 import argparse
 
 from ..utils import config
-from ..utils.log import debug, error
+from ..utils.log import debug, error, indent
 
 def run():
     parser = argparse.ArgumentParser()
@@ -33,7 +33,8 @@ def _configure(library):
     debug("Configure library: %s" % library)
     try:
         module = __import__("cocowizard.library.%s" % library, fromlist=["cocowizard.library"])
-        module.run()
+        with indent():
+            module.run()
     except ImportError as e:
         debug(e)
         error("Unable to load library configurator")
