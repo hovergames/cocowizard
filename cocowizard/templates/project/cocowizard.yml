@@ -21,6 +21,7 @@ icons:
         settings:
             overlay: True
             mask: False
+            prerendered: True
         sizes:
             57: png
             72: png
