@@ -5,12 +5,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import sh
 from path import path
 from PIL import Image
 
 from ..utils import config
-from ..utils.log import debug, error, indent
+from ..utils.log import debug, error
 
 def run():
     stores = config.get("icons")
