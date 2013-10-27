@@ -35,15 +35,15 @@ def run():
     icon_overlay_mask = Image.new("RGBA", icon_overlay.size)
     icon_overlay_mask.paste(icon_overlay, mask=mask)
 
-    for store in stores:
-        store_dir = output_dir / str(store)
+    for store_name, store in stores.items():
+        store_dir = output_dir / store_name
         if not store_dir.exists():
             store_dir.makedirs_p()
 
-        overlay = stores[store]["settings"]["overlay"]
-        mask = stores[store]["settings"]["mask"]
+        overlay = store["settings"]["overlay"]
+        mask = store["settings"]["mask"]
 
-        for size, ext in stores[store]["sizes"].items():
+        for size, ext in store["sizes"].items():
             ext = ext.lower()
             if overlay:
                 if mask and ext == "png":
@@ -56,8 +56,8 @@ def run():
                 else:
                     store_icon = icon
 
-            name = store_dir / "icon-%s.%s" % (size, ext)
-            debug("create: %s" % name)
+            filename = store_dir / "icon-%s.%s" % (size, ext)
+            debug("create: %s" % filename)
 
             store_icon = store_icon.resize((size, size), Image.ANTIALIAS)
-            store_icon.save(name, ext, quality=100, optimize=True, progressive=True)
+            store_icon.save(filename, ext, quality=100, optimize=True, progressive=True)
