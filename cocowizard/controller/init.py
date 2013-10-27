@@ -26,7 +26,7 @@ def run():
     if len(parts) < 2:
         error("Package name invalid: Use format com.company.project_name")
 
-    project_name = "".join(parts[2:])
+    project_name = ".".join(parts[2:])
     destination_dir = path(project_name)
     project_dir = destination_dir / "projects" / project_name
     if destination_dir.exists():
