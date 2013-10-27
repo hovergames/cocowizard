@@ -9,7 +9,8 @@ from path import path
 from sh import cp
 
 from ..utils import config
-from ..utils.log import info, warning, debug, indent
+from ..utils.log import debug, indent, error
+from ..utils.tools import xcode_add_source
 
 DYNAMIC_LOCAL_SRC_FILES = """LOCAL_SRC_FILES := hellocpp/main.cpp \\
     $(subst $(LOCAL_PATH)/,,$(wildcard $(LOCAL_PATH)/../../Classes/*.cpp)) \\
@@ -28,7 +29,19 @@ def run():
         _configure_ios()
 
 def _configure_ios():
-    warning("not implemented yet")
+    folder = path("Classes")
+    if not folder.exists():
+        error("Unable to iterate over %s" % folder)
+
+    pbxproj = path("proj.ios_mac/HelloCpp.xcodeproj/project.pbxproj").realpath()
+    if not pbxproj.exists():
+        error("pbxproject file not found -- iOS project present?")
+
+    debug("Search for all files in %s" % folder)
+    queue = folder.walkfiles()
+
+    debug("Add all found files to the XCode project")
+    xcode_add_source(pbxproj, _in="\n".join(queue))
 
 def _configure_android():
     for flavor in ["samsung", "google", "amazon"]:

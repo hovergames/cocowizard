@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'json'
-require '../../vendors/pbxplorer/lib/pbxplorer'
+require File.dirname(__FILE__) + '/../../vendors/pbxplorer/lib/pbxplorer'
 
 arguments = ARGV
 
