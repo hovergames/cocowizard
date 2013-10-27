@@ -22,10 +22,10 @@ def error(message, exit=True, end="\n"):
         sys.exit()
 
 def warning(message, end="\n"):
-    _print(Fore.YELLOW + "[WARN] " + INDENT_STR + message + Style.RESET_ALL, end=end)
+    _print(Fore.YELLOW + "[WARN ] " + INDENT_STR + message + Style.RESET_ALL, end=end)
 
 def info(message, end="\n"):
-    _print("[INFO] " + INDENT_STR + message, end=end)
+    _print("[INFO ] " + INDENT_STR + message, end=end)
 
 def debug(message, end="\n"):
     if "DEBUG" not in os.environ:
