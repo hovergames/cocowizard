@@ -53,9 +53,6 @@ def createGroup(folders)
 	return group
 end
 
-def createPathGroups(path)
-end
-
 def addFile(path)
 	puts "Add File: " + path
 
