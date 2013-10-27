@@ -33,7 +33,7 @@ def _configure_ios():
     if not folder.exists():
         error("Unable to iterate over %s" % folder)
 
-    pbxproj = path("proj.ios_mac/HelloCpp.xcodeproj/project.pbxproj").realpath()
+    pbxproj = path("proj.ios_mac/%s.xcodeproj/project.pbxproj" % config.get("general.project")).realpath()
     if not pbxproj.exists():
         error("pbxproject file not found -- iOS project present?")
 
