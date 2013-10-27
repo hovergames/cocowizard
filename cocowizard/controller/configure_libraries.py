@@ -16,6 +16,10 @@ def run():
     args = parser.parse_args()
 
     libs = config.get("libraries")
+    if libs is None:
+        debug("No library configured yet")
+        return
+
     if args.name == "all":
         for name in libs:
             _configure(name)
