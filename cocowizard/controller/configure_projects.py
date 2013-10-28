@@ -51,6 +51,23 @@ def _configure_android():
             _ensure_local_properties(base_dir, flavor)
             _update_android_mk(base_dir, flavor)
             _update_application_mk(base_dir, flavor)
+            _set_ant_keys(base_dir, flavor)
+
+def _set_ant_keys(base_dir, flavor):
+    key_store = config.get("general.android.key.store")
+    key_store_password = config.get("general.android.key.store_password")
+    key_alias = config.get("general.android.key.alias")
+    key_alias_password = config.get("general.android.key.alias_password")
+
+    properties = base_dir / "ant.properties"
+    text = properties.text().split("\n")
+    text.append("key.store=%s" % key_store)
+    text.append("key.store.password=%s" % key_store_password)
+    text.append("key.alias=%s" % key_alias)
+    text.append("key.alias.password=%s" % key_alias_password)
+    text.append("")
+    text = "\n".join(text)
+    properties.write_text(text)
 
 def _ensure_local_properties(base_dir, flavor):
     local = base_dir / "local.properties"

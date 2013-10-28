@@ -14,6 +14,12 @@ general:
         # >> be avaibale directly after "cocowizard init" :)
         # sdk_dir: ~/android-sdk-macosx
 
+        # key:
+            # store: ~/android.keystore
+            # store_password: pass
+            # alias: alias
+            # alias_password: pass
+
 # >> It's a good idea to move this whole section into the global configuration
 # >> too and only add / overwrite stuff here. Why? Because if you ever need
 # >> another icon resolution for one store you have to update this file
