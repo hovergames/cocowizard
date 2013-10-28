@@ -74,8 +74,6 @@ def addFile(path)
     if fileName =~ /.mm$/   then fileType = "sourcecode.cpp.objcpp" ; addToBuild = true ; end
     if fileName =~ /.c$/    then fileType = "sourcecode.cpp.c"      ; addToBuild = true ; end
 
-    if not fileType then abort("FileType of file not known: " + fileName) end
-
     file_ref = $project_file.new_object PBXFileReference, { "path" => "../" + path, "sourceTree" => type,  "lastKnownFileType" => "sourcecode.cpp.cpp", "name" => fileName }
     $project_file.add_object(file_ref)
 
