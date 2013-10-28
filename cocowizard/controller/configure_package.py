@@ -20,18 +20,13 @@ def run():
     _configure_ios_package_name()
     _configure_ios_version()
     _configure_ios_orientation()
+    _configure_ios_name()
 
-def _get_proj_dir():
-    configure_ios_package_name()
-    configure_ios_name()
-    configure_ios_version()
-    configure_ios_orientation()
+    _configure_android_name()
+    _configure_android_version()
+    _configure_android_orientation()
 
-    configure_android_name()
-    configure_android_version()
-    configure_android_orientation()
-
-def get_proj_dir_ios():
+def _get_proj_dir_ios():
     proj_dir = path("proj.ios_mac").realpath()
     if not proj_dir.exists():
         error("No ios project generated yet -- try cocowizard update")
@@ -50,23 +45,23 @@ def _configure_ios_orientation():
     else:
         error("Orientation in configuration is invalid.")
 
-def get_proj_dir_android(flavor):
+def _get_proj_dir_android(flavor):
     proj_dir = path("proj.android.%s" % flavor).realpath()
     if not proj_dir.exists():
         error("No android.%s project generated yet -- try cocowizard update" % flavor)
     return proj_dir
 
-def configure_ios_name():
+def _configure_ios_name():
     search = "<string>${PRODUCT_NAME}</string>"
     replace = "<string>%s</string>" % config.get("general.app_name")
 
-    plist_file = get_proj_dir_ios() / PLIST_FILE
+    plist_file = _get_proj_dir_ios() / PLIST_FILE
     text = plist_file.text()
     text = text.replace(search, replace)
     plist_file.write_text(text)
 
-def configure_ios_orientation():
-    plist_file = get_proj_dir_ios() / PLIST_FILE
+def _configure_ios_orientation():
+    plist_file = _get_proj_dir_ios() / PLIST_FILE
 
     text = plist_file.text()
 
@@ -77,9 +72,9 @@ def _configure_ios_package_name():
     xcode_file = _get_proj_dir() /  XCODE_FILE
     plist_file.write_text(text)
 
-def configure_android_orientation():
+def _configure_android_orientation():
     for flavor in ANDROID_FLAVORS:
-        manifest_file = get_proj_dir_android(flavor) / "AndroidManifest.xml"
+        manifest_file = _get_proj_dir_android(flavor) / "AndroidManifest.xml"
         text = manifest_file.text()
 
         orientation = str(config.get("general.orientation"))
@@ -91,24 +86,24 @@ def configure_android_orientation():
             error("Orientation in configuration is invalid.")
         manifest_file.write_text(text)
 
-def configure_ios_package_name():
+def _configure_ios_package_name():
     project = config.get("general.project")
     package = config.get("general.package")
 
-    xcode_file = get_proj_dir_ios() /  XCODE_FILE
+    xcode_file = _get_proj_dir_ios() /  XCODE_FILE
     
     text = xcode_file.text()
     text = text.replace("%s iOS" % project, project)
     xcode_file.write_text(text)
 
     package_prefix = package.replace(project, "")
-    plist_file = get_proj_dir_ios() / PLIST_FILE
+    plist_file = _get_proj_dir_ios() / PLIST_FILE
     text = plist_file.text()
     text = text.replace("org.cocos2d-x.", package_prefix)
     plist_file.write_text(text)
 
 def _configure_ios_version():
-    plist_file = get_proj_dir_ios() / PLIST_FILE
+    plist_file = _get_proj_dir_ios() / PLIST_FILE
     text = plist_file.text()
 
     if text.count("<string>1.0</string>") <> 1:
@@ -117,9 +112,9 @@ def _configure_ios_version():
     text = text.replace("<string>1.0</string>", "<string>%s</string>" % config.get("general.version"))
     plist_file.write_text(text)
 
-def configure_android_version():
+def _configure_android_version():
     for flavor in ANDROID_FLAVORS:
-        manifest_file = get_proj_dir_android(flavor) / "AndroidManifest.xml"
+        manifest_file = _get_proj_dir_android(flavor) / "AndroidManifest.xml"
         text = manifest_file.text()
 
         version_name = str(config.get("general.version"))
@@ -130,12 +125,12 @@ def configure_android_version():
 
         manifest_file.write_text(text)
 
-def configure_android_name():
+def _configure_android_name():
     search = '<string name="app_name">%s</string>' % config.get("general.project")
     replace = '<string name="app_name">%s</string>' % config.get("general.app_name")
 
     for flavor in ANDROID_FLAVORS:
-        string_res = get_proj_dir_android(flavor) / "res/values/strings.xml"
+        string_res = _get_proj_dir_android(flavor) / "res/values/strings.xml"
         text = string_res.text()
         text = text.replace(search, replace)
         string_res.write_text(text)
