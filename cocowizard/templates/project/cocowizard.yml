@@ -3,6 +3,7 @@ general:
     package: {package_name}
     version: 1.0
     orientation: landscape  # options: landscape/portrait
+    app_name: CocoWizard
 
     # >> Warning: The whole android node must, if it's empty, be invisible or
     # >>          it would override settings from ~/.cocowizard.yml with None!
