@@ -18,11 +18,24 @@ def run():
 
     input_dir = path("Meta/icons")
     output_dir = path("Meta/_generated")
+    output_dir.makedirs_p()
+
+    icon_file = input_dir / "icon.png"
+    mask_file = input_dir / "mask.png"
+    overlay_file = input_dir / "overlay.png"
+
+    old_files = list(output_dir.walkfiles())
+    if len(old_files) > 0:
+        src_time = max(icon_file.mtime, mask_file.mtime, overlay_file.mtime)
+        dst_time = min(map(lambda x: x.mtime, old_files))
+        if src_time < dst_time:
+            debug("Generated icons seem to be up to date")
+            return
 
     try:
-        icon = Image.open(input_dir / "icon.png").convert("RGBA")
-        mask = Image.open(input_dir / "mask.png").convert("L")
-        overlay = Image.open(input_dir / "overlay.png").convert("RGBA")
+        icon = Image.open(icon_file).convert("RGBA")
+        mask = Image.open(mask_file).convert("L")
+        overlay = Image.open(overlay_file).convert("RGBA")
     except BaseException as e:
         debug(e)
         error("Unable to load all required icon files")
