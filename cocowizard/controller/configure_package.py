@@ -32,19 +32,6 @@ def _get_proj_dir_ios():
         error("No ios project generated yet -- try cocowizard update")
     return proj_dir
 
-def _configure_ios_orientation():
-    orientation = config.get("general.orientation")
-    if orientation == "landscape":
-        pass
-    elif orientation == "portrait":
-        plist_file = _get_proj_dir() / PLIST_FILE
-        text = plist_file.text()
-        text = text.replace("UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationPortrait")
-        text = text.replace("UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationPortraitUpsideDown")
-        plist_file.write_text(text)
-    else:
-        error("Orientation in configuration is invalid.")
-
 def _get_proj_dir_android(flavor):
     proj_dir = path("proj.android.%s" % flavor).realpath()
     if not proj_dir.exists():
@@ -61,46 +48,57 @@ def _configure_ios_name():
     plist_file.write_text(text)
 
 def _configure_ios_orientation():
-    plist_file = _get_proj_dir_ios() / PLIST_FILE
+    orientation = config.get("general.orientation")
+    if orientation == "landscape":
+        pass
+    elif orientation == "portrait":
+        plist_file = _get_proj_dir_ios() / PLIST_FILE
+        text = plist_file.text()
+        text = text.replace("UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationPortrait")
+        text = text.replace("UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationPortraitUpsideDown")
+        plist_file.write_text(text)
+    else:
+        error("Orientation in configuration is invalid.")
 
-    text = plist_file.text()
+def _get_proj_dir_android(flavor):
+    proj_dir = path("proj.android.%s" % flavor).realpath()
+    if not proj_dir.exists():
+        error("No android.%s project generated yet -- try cocowizard update" % flavor)
+    return proj_dir
 
-def _configure_ios_package_name():
-    project = config.get("general.project")
-    package = config.get("general.package")
-
-    xcode_file = _get_proj_dir() /  XCODE_FILE
-    plist_file.write_text(text)
-
-def _configure_android_orientation():
-    for flavor in ANDROID_FLAVORS:
-        manifest_file = _get_proj_dir_android(flavor) / "AndroidManifest.xml"
-        text = manifest_file.text()
-
-        orientation = str(config.get("general.orientation"))
-        if orientation == "landscape":
-            pass
-        elif orientation == "portrait":
-            text = text.replace("landscape", "portrait")
-        else:
-            error("Orientation in configuration is invalid.")
-        manifest_file.write_text(text)
 
 def _configure_ios_package_name():
     project = config.get("general.project")
     package = config.get("general.package")
 
     xcode_file = _get_proj_dir_ios() /  XCODE_FILE
-    
+
     text = xcode_file.text()
     text = text.replace("%s iOS" % project, project)
     xcode_file.write_text(text)
 
     package_prefix = package.replace(project, "")
+
     plist_file = _get_proj_dir_ios() / PLIST_FILE
     text = plist_file.text()
     text = text.replace("org.cocos2d-x.", package_prefix)
     plist_file.write_text(text)
+
+def _configure_android_orientation():
+    for flavor in ANDROID_FLAVORS:
+        orientation = config.get("general.orientation")
+        if orientation == "landscape":
+            pass
+        elif orientation == "portrait":
+            manifest_file = _get_proj_dir_android(flavor) / "AndroidManifest.xml"
+            text = manifest_file.text()
+            text = text.replace("landscape", "portrait")
+            manifest_file.write_text(text)
+        else:
+            error("Orientation in configuration is invalid.")
+
+    
+
 
 def _configure_ios_version():
     plist_file = _get_proj_dir_ios() / PLIST_FILE
