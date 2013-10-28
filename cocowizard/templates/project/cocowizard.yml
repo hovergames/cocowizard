@@ -5,81 +5,71 @@ general:
     orientation: landscape  # options: landscape/portrait
     app_name: CocoWizard
 
-    # >> Warning: The whole android node must, if it's empty, be invisible or
-    # >>          it would override settings from ~/.cocowizard.yml with None!
+    # !! Configure this in: ~/.cocowizard.yml
     # android:
+    #     sdk_dir: ~/android-sdk-macosx
+    #     key:
+    #         store: ~/android.keystore
+    #         store_password: pass
+    #         alias: alias
+    #         alias_password: pass
 
-        # >> It's a good idea to configure this setting in the global
-        # >> configuration ~/.cocowizard.yml and "cocowizard update" should
-        # >> be avaibale directly after "cocowizard init" :)
-        # sdk_dir: ~/android-sdk-macosx
-
-        # key:
-            # store: ~/android.keystore
-            # store_password: pass
-            # alias: alias
-            # alias_password: pass
-
-# >> It's a good idea to move this whole section into the global configuration
-# >> too and only add / overwrite stuff here. Why? Because if you ever need
-# >> another icon resolution for one store you have to update this file
-# >> _in every_ project managed with cocowizard. With the global configuration
-# >> this is reduced to only one file change :)
-icons:
-    ios:
-        settings:
-            overlay: True
-            mask: False
-        sizes:
-            29: png
-            40: png
-            50: png
-            57: png
-            58: png
-            72: png
-            76: png
-            80: png
-            100: png
-            114: png
-            120: png
-            144: png
-            152: png
-            1024: png
-    android.google:
-        settings:
-            overlay: True
-            mask: True
-        sizes:
-            32: png
-            36: png
-            48: png
-            72: png
-            96: png
-            512: png
-    android.amazon:
-        settings:
-            overlay: True
-            mask: True
-        sizes:
-            32: png
-            36: png
-            48: png
-            72: png
-            96: png
-            114: png
-            512: png
-    android.samsung:
-        settings:
-            overlay: True
-            mask: True
-        sizes:
-            32: png
-            36: png
-            48: png
-            72: png
-            96: png
-            135: jpeg
-            512: png
+# !! Configure this in: ~/.cocowizard.yml
+# icons:
+#     ios:
+#         settings:
+#             overlay: True
+#             mask: False
+#         sizes:
+#             29: png
+#             40: png
+#             50: png
+#             57: png
+#             58: png
+#             72: png
+#             76: png
+#             80: png
+#             100: png
+#             114: png
+#             120: png
+#             144: png
+#             152: png
+#             1024: png
+#     android.google:
+#         settings:
+#             overlay: True
+#             mask: True
+#         sizes:
+#             32: png
+#             36: png
+#             48: png
+#             72: png
+#             96: png
+#             512: png
+#     android.amazon:
+#         settings:
+#             overlay: True
+#             mask: True
+#         sizes:
+#             32: png
+#             36: png
+#             48: png
+#             72: png
+#             96: png
+#             114: png
+#             512: png
+#     android.samsung:
+#         settings:
+#             overlay: True
+#             mask: True
+#         sizes:
+#             32: png
+#             36: png
+#             48: png
+#             72: png
+#             96: png
+#             135: jpeg
+#             512: png
 
 # >> Libraries are our way to handle third-party stuff within cocowizard. Just
 # >> put all the required configuration here and add some python code to
