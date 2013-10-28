@@ -38,7 +38,7 @@ def _configure_ios():
         error("pbxproject file not found -- iOS project present?")
 
     debug("Search for all files in %s" % folder)
-    queue = folder.walkfiles()
+    queue = set(folder.walkfiles())
 
     debug("Add all found files to the XCode project")
     xcode_clear_classes(pbxproj)

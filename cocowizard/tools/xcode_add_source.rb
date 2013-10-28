@@ -67,6 +67,14 @@ def addFile(path)
         type = "<group>"
     end
 
+    child_paths = group.children.map do |child|
+        child["path"]
+    end
+
+    if child_paths.include?("../" + path)
+        return
+    end
+
     addToBuild = false
 
     if fileName =~ /.cpp$/  then fileType = "sourcecode.cpp.cpp"    ; addToBuild = true ; end
