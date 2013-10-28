@@ -11,7 +11,7 @@ from functools import partial
 
 from ..utils import config
 from ..utils.log import info, warning, debug, indent
-from ..utils.tools import xcode_add_source
+from ..utils.tools import xcode_add_source, xcode_add_system_frameworks
 
 AVALON_URL = "git@github.com:hovergames/avalon.git"
 
@@ -111,11 +111,15 @@ def _android_copy_java_files(base_dir, flavor):
                     cp("-rf", subdir, to_dir)
 
 def _ios_configure():
-    _ios_add_avalon_files()
-    _ios_add_apple_frameworks()
+    pbxproj = path("proj.ios_mac/%s.xcodeproj/project.pbxproj" % config.get("general.project")).realpath()
+    if not pbxproj.exists():
+        error("pbxproject file not found -- iOS project present?")
+
+    _ios_add_avalon_files(pbxproj)
+    _ios_add_apple_frameworks(pbxproj)
     _ios_add_avalon_defines()
 
-def _ios_add_apple_frameworks():
+def _ios_add_apple_frameworks(pbxproj):
     debug("Enable Apple frameworks")
     features = _get_avalon_features("ios")
 
@@ -147,9 +151,8 @@ def _ios_add_apple_frameworks():
     if "gamecenter" in features:
         require("GameKit")
 
-    for name, required in frameworks.items():
-        name = "%s.framework" % name
-        warning("ENABLE APPLE FRAMEWORK: %s" % name)
+    lines = ["%s %d" % (x, y) for x, y in frameworks.items()]
+    xcode_add_system_frameworks(pbxproj, _in="\n".join(lines))
 
 def _ios_add_avalon_defines():
     defines = _get_defines("ios")
@@ -167,11 +170,7 @@ def _ios_add_avalon_defines():
         debug("Configure: %s" % prefix_file)
         prefix_file.write_text("\n".join(text))
 
-def _ios_add_avalon_files():
-    pbxproj = path("proj.ios_mac/%s.xcodeproj/project.pbxproj" % config.get("general.project")).realpath()
-    if not pbxproj.exists():
-        error("pbxproject file not found -- iOS project present?")
-
+def _ios_add_avalon_files(pbxproj):
     features = _get_avalon_features("ios")
     def disabled_features(path):
         if "avalon/platform/ios/" not in path:
