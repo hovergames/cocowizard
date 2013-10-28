@@ -12,3 +12,4 @@ from . import config
 TOOLS_DIR = config.root_dir() / "cocowizard/tools"
 
 xcode_add_source = sh.Command(TOOLS_DIR / "xcode_add_source.rb")
+xcode_clear_classes = sh.Command(TOOLS_DIR / "xcode_clear_classes.rb")

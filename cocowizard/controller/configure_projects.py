@@ -10,7 +10,7 @@ from sh import cp
 
 from ..utils import config
 from ..utils.log import debug, indent, error
-from ..utils.tools import xcode_add_source
+from ..utils.tools import xcode_add_source, xcode_clear_classes
 
 DYNAMIC_LOCAL_SRC_FILES = """LOCAL_SRC_FILES := hellocpp/main.cpp \\
     $(subst $(LOCAL_PATH)/,,$(wildcard $(LOCAL_PATH)/../../Classes/*.cpp)) \\
@@ -41,6 +41,7 @@ def _configure_ios():
     queue = folder.walkfiles()
 
     debug("Add all found files to the XCode project")
+    xcode_clear_classes(pbxproj)
     xcode_add_source(pbxproj, _in="\n".join(queue))
 
 def _configure_android():
