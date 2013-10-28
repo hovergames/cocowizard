@@ -75,17 +75,21 @@ def addFile(path)
         return
     end
 
-    addToBuild = false
+    add_to_build = false
+    link_file = false
 
-    if fileName =~ /.cpp$/  then fileType = "sourcecode.cpp.cpp"    ; addToBuild = true ; end
-    if fileName =~ /.h$/    then fileType = "sourcecode.cpp.h"      ; end
-    if fileName =~ /.mm$/   then fileType = "sourcecode.cpp.objcpp" ; addToBuild = true ; end
-    if fileName =~ /.c$/    then fileType = "sourcecode.cpp.c"      ; addToBuild = true ; end
+    if fileName =~ /.cpp$/       then fileType = "sourcecode.cpp.cpp"    ; add_to_build = true  ; end
+    if fileName =~ /.h$/         then fileType = "sourcecode.cpp.h"      ; end
+    if fileName =~ /.mm$/        then fileType = "sourcecode.cpp.objcpp" ; add_to_build = true  ; end
+    if fileName =~ /.c$/         then fileType = "sourcecode.cpp.c"      ; add_to_build = true  ; end
+    if fileName =~ /.framework$/ then fileType = "wrapper.framework"     ; link_file = true    ; end
+    if fileName =~ /.a$/         then fileType = "archive.ar"            ; link_file = true    ; end
+    if fileName =~ /.bundle$/    then fileType = "wrapper.plug-in"       ; end
 
     file_ref = $project_file.new_object PBXFileReference, { "path" => "../" + path, "sourceTree" => type,  "lastKnownFileType" => "sourcecode.cpp.cpp", "name" => fileName }
     $project_file.add_object(file_ref)
 
-    if addToBuild == true
+    if add_to_build
         build_file = $project_file.new_object PBXBuildFile, { "fileRef" => file_ref.uuid }
 
         build_phases = $project_file.objects_of_class PBXSourcesBuildPhase
@@ -94,11 +98,29 @@ def addFile(path)
         end
     end
 
+    if link_file
+        build_file = $project_file.new_object PBXBuildFile, { "fileRef" => file_ref.uuid }
+
+        $frameworks.each do |framework|
+            framework["files"] << build_file.uuid
+        end
+    end
+
+    if fileType == "wrapper.plug-in"
+        build_file = $project_file.new_object PBXBuildFile, { "fileRef" => file_ref.uuid }
+
+        $res_buildphase.each do |res|
+            res["files"] << build_file.uuid
+        end        
+    end
+
     group["children"] << file_ref.uuid
 end
 
 $project_file = XCProjectFile.new arguments.shift
 $main_group = $project_file.project.main_group
+$frameworks = $project_file.objects_of_class PBXFrameworksBuildPhase
+$res_buildphase = $project_file.objects_of_class PBXResourcesBuildPhase
 
 arguments.each do|path|
     addFile(path)
