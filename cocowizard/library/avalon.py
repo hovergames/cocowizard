@@ -14,6 +14,7 @@ from ..utils.log import info, warning, debug, indent
 from ..utils.tools import xcode_add_source, xcode_add_system_frameworks, xcode_build_settings
 
 AVALON_URL = "git@github.com:hovergames/avalon.git"
+AVALON_REF = "master"
 
 def run():
     _ensure_installed()
@@ -41,8 +42,15 @@ def _add_git_submodule(avalon_dir):
     info("Adding avalon with all submodules -- this can take a while")
     warning("Do not interrupt this process!")
 
+    git_url = config.get("libraries.avalon.git.url", AVALON_URL)
+    git_ref = config.get("libraries.avalon.git.ref", AVALON_REF)
+
     debug("Add avalon as submodule")
-    for chunk in git("submodule", "add", AVALON_URL, avalon_dir, _iter=True):
+    for chunk in git("submodule", "add", git_url, avalon_dir, _iter=True):
+        info(chunk, end="")
+
+    debug("Switch avalon to the right branch")
+    for chunk in git("checkout", git_ref, _iter=True, _cwd=avalon_dir):
         info(chunk, end="")
 
     debug("Initialize submodules inside of avalon")

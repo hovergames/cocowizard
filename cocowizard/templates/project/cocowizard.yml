@@ -80,6 +80,9 @@ libraries:
     # >> functions managed by Jochen Heizmann and Michael Contento.
     # >> Code can be found here: https://github.com/hovergames/avalon
     # avalon:
+        # git:
+            # url: git@github.com:hovergames/avalon.git
+            # ref: master
         # ios:
             # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
             # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
