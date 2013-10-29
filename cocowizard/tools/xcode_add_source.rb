@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'json'
+require File.dirname(__FILE__) + '/xcode_build_settings.rb'
 require File.dirname(__FILE__) + '/../../vendors/pbxplorer/lib/pbxplorer'
 
 arguments = ARGV
@@ -83,9 +84,12 @@ def addFile(path)
     if fileName =~ /.h$/         then fileType = "sourcecode.cpp.h"      ; end
     if fileName =~ /.mm$/        then fileType = "sourcecode.cpp.objcpp" ; add_to_build = true  ; end
     if fileName =~ /.c$/         then fileType = "sourcecode.cpp.c"      ; add_to_build = true  ; end
-    if fileName =~ /.framework$/ then fileType = "wrapper.framework"     ; link_file = true    ; end
-    if fileName =~ /.a$/         then fileType = "archive.ar"            ; link_file = true    ; end
+    if fileName =~ /.a$/         then fileType = "archive.ar"            ; link_file = true     ; end
     if fileName =~ /.bundle$/    then fileType = "wrapper.plug-in"       ; end
+    if fileName =~ /.framework$/ then fileType = "wrapper.framework"     ; link_file = true     ;
+        framework_folder = File.dirname "$(SRCROOT)/../" + path
+        build_settings "add", "FRAMEWORK_SEARCH_PATHS", framework_folder
+    end
 
     file_ref = $project_file.new_object PBXFileReference, { "path" => "../" + path, "sourceTree" => type,  "lastKnownFileType" => fileType, "name" => fileName }
     $project_file.add_object(file_ref)

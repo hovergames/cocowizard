@@ -11,7 +11,7 @@ from functools import partial
 
 from ..utils import config
 from ..utils.log import info, warning, debug, indent
-from ..utils.tools import xcode_add_source, xcode_add_system_frameworks
+from ..utils.tools import xcode_add_source, xcode_add_system_frameworks, xcode_build_settings
 
 AVALON_URL = "git@github.com:hovergames/avalon.git"
 
@@ -118,6 +118,7 @@ def _ios_configure():
     _ios_add_avalon_files(pbxproj)
     _ios_add_apple_frameworks(pbxproj)
     _ios_add_avalon_defines()
+    xcode_build_settings(pbxproj, "add", "HEADER_SEARCH_PATHS", "$(SRCROOT)/../Vendors/avalon")
 
 def _ios_add_apple_frameworks(pbxproj):
     debug("Enable Apple frameworks")
