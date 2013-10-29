@@ -4,6 +4,7 @@ require 'rubygems'
 require 'json'
 require File.dirname(__FILE__) + '/../../vendors/pbxplorer/lib/pbxplorer'
 require File.dirname(__FILE__) + '/xcode_add_source.rb'
+require File.dirname(__FILE__) + '/xcode_build_settings.rb'
 
 arguments = ARGV
 
@@ -16,6 +17,7 @@ def add_framework(library_name)
     framework = addFile("Frameworks/" + library_name)
     framework["path"] = "System/Library/Frameworks/" + library_name
     framework["sourceTree"] = "SDKROOT"
+    build_settings("remove", "FRAMEWORK_SEARCH_PATHS", "$(SRCROOT)/../Frameworks")
 end
 
 def get_framework(library_name)
