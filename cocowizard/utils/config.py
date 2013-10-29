@@ -43,13 +43,16 @@ def has(key):
 
     return True
 
-def get(key):
+def get(key, default=None):
     parts = key.split(".")
     config = root()
 
     for part in parts:
         if not isinstance(config, dict) or part not in config:
-            error(key + " is not configured yet")
+            if not default is None:
+                return default
+            else:
+                error(key + " is not configured yet")
         config = config[part]
 
     return config
