@@ -78,6 +78,7 @@ def addFile(path)
     add_to_build = false
     link_file = false
 
+    fileType = "sourcecode.cpp.cpp"
     if fileName =~ /.cpp$/       then fileType = "sourcecode.cpp.cpp"    ; add_to_build = true  ; end
     if fileName =~ /.h$/         then fileType = "sourcecode.cpp.h"      ; end
     if fileName =~ /.mm$/        then fileType = "sourcecode.cpp.objcpp" ; add_to_build = true  ; end
@@ -86,7 +87,7 @@ def addFile(path)
     if fileName =~ /.a$/         then fileType = "archive.ar"            ; link_file = true    ; end
     if fileName =~ /.bundle$/    then fileType = "wrapper.plug-in"       ; end
 
-    file_ref = $project_file.new_object PBXFileReference, { "path" => "../" + path, "sourceTree" => type,  "lastKnownFileType" => "sourcecode.cpp.cpp", "name" => fileName }
+    file_ref = $project_file.new_object PBXFileReference, { "path" => "../" + path, "sourceTree" => type,  "lastKnownFileType" => fileType, "name" => fileName }
     $project_file.add_object(file_ref)
 
     if add_to_build
@@ -115,21 +116,25 @@ def addFile(path)
     end
 
     group["children"] << file_ref.uuid
+
+    return file_ref
 end
 
-$project_file = XCProjectFile.new arguments.shift
-$main_group = $project_file.project.main_group
-$frameworks = $project_file.objects_of_class PBXFrameworksBuildPhase
-$res_buildphase = $project_file.objects_of_class PBXResourcesBuildPhase
+if __FILE__==$0
+    $project_file = XCProjectFile.new arguments.shift
+    $main_group = $project_file.project.main_group
+    $frameworks = $project_file.objects_of_class PBXFrameworksBuildPhase
+    $res_buildphase = $project_file.objects_of_class PBXResourcesBuildPhase
 
-arguments.each do|path|
-    addFile(path)
-end
-
-if not STDIN.tty?
-    STDIN.read.split("\n").each do |path|
-       addFile(path)
+    arguments.each do|path|
+        addFile(path)
     end
-end
 
-$project_file.save
+    if not STDIN.tty?
+        STDIN.read.split("\n").each do |path|
+           addFile(path)
+        end
+    end
+
+    $project_file.save
+end
