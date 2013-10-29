@@ -5,14 +5,15 @@ general:
     version: 1.0
     orientation: landscape  # options: landscape/portrait
 
-    # !! Configure this in: ~/.cocowizard.yml
-    # android:
-    #     sdk_dir: ~/android-sdk-macosx
-    #     key:
-    #         store: ~/android.keystore
-    #         store_password: pass
-    #         alias: alias
-    #         alias_password: pass
+    android:
+        prefer_amazon_over_google: true
+        # !! Configure this in: ~/.cocowizard.yml
+        # sdk_dir: ~/android-sdk-macosx
+        # key:
+        #     store: ~/android.keystore
+        #     store_password: pass
+        #     alias: alias
+        #     alias_password: pass
 
 # >> Libraries are our way to handle third-party stuff within cocowizard. Just
 # >> put all the required configuration here and add some python code to
