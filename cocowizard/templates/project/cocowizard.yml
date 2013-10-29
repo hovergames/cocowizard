@@ -25,8 +25,8 @@ libraries:
     # >> Code can be found here: https://github.com/hovergames/avalon
     # avalon:
         # git:
-            # url: git@github.com:hovergames/avalon.git
-            # ref: master
+            # url: git@github.com:hovergames/avalon.git # optional
+            # ref: master                               # optional
         # ios:
             # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
             # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
