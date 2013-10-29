@@ -14,6 +14,57 @@ general:
     #         alias: alias
     #         alias_password: pass
 
+# >> Libraries are our way to handle third-party stuff within cocowizard. Just
+# >> put all the required configuration here and add some python code to
+# >> cocowizard/libraries/$name_of_the_library.py and everything should be fine.
+libraries:
+
+    # >> Avalon is a collection of various extensions, helper and other
+    # >> functions managed by Jochen Heizmann and Michael Contento.
+    # >> Code can be found here: https://github.com/hovergames/avalon
+    # avalon:
+        # git:
+            # url: git@github.com:hovergames/avalon.git
+            # ref: master
+        # ios:
+            # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
+            # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
+            # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
+            # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
+            # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
+            # - AVALON_CONFIG_APPIRATER_ENABLED
+            # - AVALON_CONFIG_GAMECENTER_ENABLED
+            # - AVALON_CONFIG_PAYMENT_ENABLED
+        # android:
+            # google:
+                # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
+                # - AVALON_CONFIG_APPIRATER_ENABLED
+                # - AVALON_CONFIG_GAMECENTER_ENABLED
+                # - AVALON_CONFIG_GAMECENTER_USE_AMAZON_ON_GOOGLE
+                # - AVALON_CONFIG_PAYMENT_ENABLED
+            # amazon:
+                # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
+                # - AVALON_CONFIG_APPIRATER_ENABLED
+                # - AVALON_CONFIG_GAMECENTER_ENABLED
+                # - AVALON_CONFIG_PAYMENT_ENABLED
+            # samsung:
+                # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
+                # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
+                # - AVALON_CONFIG_APPIRATER_ENABLED
+                # - AVALON_CONFIG_GAMECENTER_ENABLED
+                # - AVALON_CONFIG_PAYMENT_ENABLED
+
 # !! Configure this in: ~/.cocowizard.yml
 # icons:
 #     ios:
@@ -70,54 +121,3 @@ general:
 #             96: png
 #             135: jpeg
 #             512: png
-
-# >> Libraries are our way to handle third-party stuff within cocowizard. Just
-# >> put all the required configuration here and add some python code to
-# >> cocowizard/libraries/$name_of_the_library.py and everything should be fine.
-libraries:
-
-    # >> Avalon is a collection of various extensions, helper and other
-    # >> functions managed by Jochen Heizmann and Michael Contento.
-    # >> Code can be found here: https://github.com/hovergames/avalon
-    # avalon:
-        # git:
-            # url: git@github.com:hovergames/avalon.git
-            # ref: master
-        # ios:
-            # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
-            # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
-            # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
-            # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
-            # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
-            # - AVALON_CONFIG_APPIRATER_ENABLED
-            # - AVALON_CONFIG_GAMECENTER_ENABLED
-            # - AVALON_CONFIG_PAYMENT_ENABLED
-        # android:
-            # google:
-                # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
-                # - AVALON_CONFIG_APPIRATER_ENABLED
-                # - AVALON_CONFIG_GAMECENTER_ENABLED
-                # - AVALON_CONFIG_GAMECENTER_USE_AMAZON_ON_GOOGLE
-                # - AVALON_CONFIG_PAYMENT_ENABLED
-            # amazon:
-                # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
-                # - AVALON_CONFIG_APPIRATER_ENABLED
-                # - AVALON_CONFIG_GAMECENTER_ENABLED
-                # - AVALON_CONFIG_PAYMENT_ENABLED
-            # samsung:
-                # - AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
-                # - AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
-                # - AVALON_CONFIG_APPIRATER_ENABLED
-                # - AVALON_CONFIG_GAMECENTER_ENABLED
-                # - AVALON_CONFIG_PAYMENT_ENABLED
