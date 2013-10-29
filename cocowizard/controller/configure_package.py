@@ -79,7 +79,7 @@ def _configure_ios_package_name():
 
     plist_file = _get_proj_dir_ios() / PLIST_FILE
     text = plist_file.text()
-    text = text.replace("org.cocos2d-x.${PRODUCT_NAME:rfc1034identifier}", "%s.%s" % (package, project))
+    text = text.replace("org.cocos2d-x.${PRODUCT_NAME:rfc1034identifier}", package)
     plist_file.write_text(text)
 
 def _configure_android_orientation():
