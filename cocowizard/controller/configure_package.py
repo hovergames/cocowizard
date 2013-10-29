@@ -68,8 +68,8 @@ def _get_proj_dir_android(flavor):
 
 
 def _configure_ios_package_name():
-    project = config.get("general.project")
     package = config.get("general.package")
+    project = config.get("general.project")
 
     xcode_file = _get_proj_dir_ios() /  XCODE_FILE
 
@@ -77,11 +77,9 @@ def _configure_ios_package_name():
     text = text.replace("%s iOS" % project, project)
     xcode_file.write_text(text)
 
-    package_prefix = package.replace(project, "")
-
     plist_file = _get_proj_dir_ios() / PLIST_FILE
     text = plist_file.text()
-    text = text.replace("org.cocos2d-x.", package_prefix)
+    text = text.replace("org.cocos2d-x.${PRODUCT_NAME:rfc1034identifier}", "%s.%s" % (package, project))
     plist_file.write_text(text)
 
 def _configure_android_orientation():
