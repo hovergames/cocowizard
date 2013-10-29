@@ -31,11 +31,14 @@ def _get_ios_path():
         error("No ios project generated yet -- try cocowizard update")
     return proj_dir
 
-def _configure_ios():
-    icons_dir = path("Meta/_generated/ios")
+def _get_icon_path(target):
+    icons_dir = path("Meta/_generated/%s" % target)
     if not icons_dir.exists():
-        error("No ios icons generated yet -- try cocowizard generate_icons")
+        error("No icons generated yet -- try cocowizard generate_icons")
+    return icons_dir
 
+def _configure_ios():
+    icons_dir = _get_icon_path("ios")
     proj_dir = _get_ios_path()
 
     for size in IOS_SIZES:
@@ -49,25 +52,21 @@ def _configure_ios():
         icon_from.copy(icon_to)
 
 def _configure_launch_images_ios():
-    proj_dir = _get_ios_path()
-
     source_dir = path("Meta/launch_images/")
     if not source_dir.exists():
         error("Launch images not generated yet -- try cocowizard generate_icons")
 
+    proj_dir = _get_ios_path()
     images = ["Default.png", "Default-568h@2x.png", "Default@2x.png"]
     for image in images:
         (source_dir / image).copy(proj_dir / image)
 
 def _configure_android(flavor):
-    icons_dir = path("Meta/_generated/android.%s" % flavor)
-    if not icons_dir.exists():
-        error("No android icons generated yet -- try cocowizard generate_icons")
-
     proj_dir = path("proj.android.%s" % flavor).realpath()
     if not proj_dir.exists():
         error("No android project generated yet -- try cocowizard update")
 
+    icons_dir = _get_icon_path("android.%s" % flavor)
     for size, mode in ANDROID_SIZES:
         icon_from = icons_dir / ("icon-%s.png" % size)
         icon_to = proj_dir / ("res/drawable-%s/icon.png" % mode)
