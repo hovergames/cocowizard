@@ -79,17 +79,19 @@ def addFile(path)
     add_to_build = false
     link_file = false
 
+    def configure_build_settings(key, path)
+        path = File.dirname "$(SRCROOT)/../" + path
+        build_settings "add", key, path
+    end
+
     fileType = "sourcecode.cpp.cpp"
     if fileName =~ /.cpp$/       then fileType = "sourcecode.cpp.cpp"    ; add_to_build = true  ; end
     if fileName =~ /.h$/         then fileType = "sourcecode.cpp.h"      ; end
     if fileName =~ /.mm$/        then fileType = "sourcecode.cpp.objcpp" ; add_to_build = true  ; end
     if fileName =~ /.c$/         then fileType = "sourcecode.cpp.c"      ; add_to_build = true  ; end
-    if fileName =~ /.a$/         then fileType = "archive.ar"            ; link_file = true     ; end
     if fileName =~ /.bundle$/    then fileType = "wrapper.plug-in"       ; end
-    if fileName =~ /.framework$/ then fileType = "wrapper.framework"     ; link_file = true     ;
-        framework_folder = File.dirname "$(SRCROOT)/../" + path
-        build_settings "add", "FRAMEWORK_SEARCH_PATHS", framework_folder
-    end
+    if fileName =~ /.a$/         then fileType = "archive.ar"            ; link_file = true     ; configure_build_settings "LIBRARY_SEARCH_PATHS"  , path; end
+    if fileName =~ /.framework$/ then fileType = "wrapper.framework"     ; link_file = true     ; configure_build_settings "FRAMEWORK_SEARCH_PATHS", path; end
 
     file_ref = $project_file.new_object PBXFileReference, { "path" => "../" + path, "sourceTree" => type,  "lastKnownFileType" => fileType, "name" => fileName }
     $project_file.add_object(file_ref)
