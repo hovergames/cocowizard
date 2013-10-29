@@ -14,8 +14,6 @@ from ..utils.log import error, debug, indent
 XCODE_FILE = config.get("general.project") + ".xcodeproj/project.pbxproj"
 PLIST_FILE = "ios/Info.plist"
 
-ANDROID_FLAVORS = ["google", "samsung", "amazon"]
-
 def run():
     _configure_ios_package_name()
     _configure_ios_version()
@@ -60,19 +58,11 @@ def _configure_ios_orientation():
     else:
         error("Orientation in configuration is invalid.")
 
-def _get_proj_dir_android(flavor):
-    proj_dir = path("proj.android.%s" % flavor).realpath()
-    if not proj_dir.exists():
-        error("No android.%s project generated yet -- try cocowizard update" % flavor)
-    return proj_dir
-
-
 def _configure_ios_package_name():
     package = config.get("general.package")
     project = config.get("general.project")
 
     xcode_file = _get_proj_dir_ios() /  XCODE_FILE
-
     text = xcode_file.text()
     text = text.replace("%s iOS" % project, project)
     xcode_file.write_text(text)
@@ -83,7 +73,7 @@ def _configure_ios_package_name():
     plist_file.write_text(text)
 
 def _configure_android_orientation():
-    for flavor in ANDROID_FLAVORS:
+    for flavor in config.android_flavors():
         orientation = config.get("general.orientation")
         if orientation == "landscape":
             pass
@@ -94,9 +84,6 @@ def _configure_android_orientation():
             manifest_file.write_text(text)
         else:
             error("Orientation in configuration is invalid.")
-
-    
-
 
 def _configure_ios_version():
     plist_file = _get_proj_dir_ios() / PLIST_FILE
@@ -109,23 +96,21 @@ def _configure_ios_version():
     plist_file.write_text(text)
 
 def _configure_android_version():
-    for flavor in ANDROID_FLAVORS:
+    version_name = config.get("general.version")
+    version_code = str(config.get("general.version")).replace(".", "")
+
+    for flavor in config.android_flavors():
         manifest_file = _get_proj_dir_android(flavor) / "AndroidManifest.xml"
         text = manifest_file.text()
-
-        version_name = str(config.get("general.version"))
-        version_code = str(config.get("general.version")).replace(".", "")
-
         text = text.replace("android:versionCode=\"1\"", "android:versionCode=\"%s\"" % version_code)
         text = text.replace("android:versionName=\"1.0\"", "android:versionName=\"%s\"" % version_name)
-
         manifest_file.write_text(text)
 
 def _configure_android_name():
     search = '<string name="app_name">%s</string>' % config.get("general.project")
     replace = '<string name="app_name">%s</string>' % config.get("general.app_name")
 
-    for flavor in ANDROID_FLAVORS:
+    for flavor in config.android_flavors():
         string_res = _get_proj_dir_android(flavor) / "res/values/strings.xml"
         text = string_res.text()
         text = text.replace(search, replace)

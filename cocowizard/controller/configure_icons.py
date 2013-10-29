@@ -20,7 +20,7 @@ def run():
         _configure_ios()
         _configure_launch_images_ios()
 
-    for flavor in ["amazon", "google", "samsung"]:
+    for flavor in config.android_flavors():
         debug("android.%s" % flavor)
         with indent():
             _configure_android(flavor)

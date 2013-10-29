@@ -71,7 +71,7 @@ def _move_project_files():
         proj_dir.move(to_dir)
 
     android_dir = to_dir / "proj.android"
-    for android_flavor in ["samsung", "amazon", "google"]:
+    for android_flavor in config.android_flavors():
         proj_dir = to_dir / "proj.android.%s" % android_flavor
         debug("copy: %s" % proj_dir)
         android_dir.copytree(proj_dir)

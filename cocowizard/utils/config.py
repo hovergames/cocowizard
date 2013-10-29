@@ -15,6 +15,9 @@ from .log import error
 CONFIG_NAME = "cocowizard.yml"
 CACHE = None
 
+def android_flavors():
+    return ["google", "samsung", "amazon"]
+
 def root_dir():
     return (path(sys.argv[0]) / "..").abspath().dirname().realpath()
 

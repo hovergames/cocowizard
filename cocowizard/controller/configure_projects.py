@@ -45,7 +45,7 @@ def _configure_ios():
     xcode_add_source(pbxproj, _in="\n".join(queue))
 
 def _configure_android():
-    for flavor in ["samsung", "google", "amazon"]:
+    for flavor in config.android_flavors():
         debug("android.%s" % flavor)
         with indent():
             base_dir = path("proj.android.%s" % flavor)
