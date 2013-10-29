@@ -1,9 +1,9 @@
 general:
-    project: {project_name}
     package: {package_name}
+    project: {project_name}
+    app_name: {project_name}
     version: 1.0
     orientation: landscape  # options: landscape/portrait
-    app_name: CocoWizard
 
     # !! Configure this in: ~/.cocowizard.yml
     # android:
