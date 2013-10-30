@@ -10,7 +10,7 @@ from sh import cp
 
 from ..utils import config
 from ..utils.log import debug, indent, error
-from ..utils.tools import xcode_add_source, xcode_clear_classes
+from ..utils.tools import xcode_add_source, xcode_clear_classes_and_resources
 
 DYNAMIC_LOCAL_SRC_FILES = """LOCAL_SRC_FILES := hellocpp/main.cpp \\
     $(subst $(LOCAL_PATH)/,,$(wildcard $(LOCAL_PATH)/../../Classes/*.cpp)) \\
@@ -29,20 +29,23 @@ def run():
         _configure_ios()
 
 def _configure_ios():
-    folder = path("Classes")
-    if not folder.exists():
-        error("Unable to iterate over %s" % folder)
-
     pbxproj = path("proj.ios_mac/%s.xcodeproj/project.pbxproj" % config.get("general.project")).realpath()
     if not pbxproj.exists():
         error("pbxproject file not found -- iOS project present?")
 
-    debug("Search for all files in %s" % folder)
-    queue = set(folder.walkfiles())
+    debug("Remove old files in Classes/ and Resources/")
+    xcode_clear_classes_and_resources(pbxproj)
 
-    debug("Add all found files to the XCode project")
-    xcode_clear_classes(pbxproj)
-    xcode_add_source(pbxproj, _in="\n".join(queue))
+    for folder in ["Classes", "Resources"]:
+        folder = path(folder)
+        if not folder.exists():
+            error("Unable to iterate over %s" % folder)
+
+        debug("Search for all files in %s" % folder)
+        queue = set(folder.walkfiles())
+
+        debug("Add all found files to the XCode project")
+        xcode_add_source(pbxproj, _in="\n".join(queue))
 
 def _configure_android():
     for flavor in config.android_flavors():

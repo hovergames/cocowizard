@@ -14,4 +14,4 @@ TOOLS_DIR = config.root_dir() / "cocowizard/tools"
 xcode_add_source = sh.Command(TOOLS_DIR / "xcode_add_source.rb")
 xcode_add_system_frameworks = sh.Command(TOOLS_DIR / "xcode_add_system_frameworks.rb")
 xcode_build_settings = sh.Command(TOOLS_DIR / "xcode_build_settings.rb")
-xcode_clear_classes = sh.Command(TOOLS_DIR / "xcode_clear_classes.rb")
+xcode_clear_classes_and_resources = sh.Command(TOOLS_DIR / "xcode_clear_classes_and_resources.rb")
