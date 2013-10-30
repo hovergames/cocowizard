@@ -70,7 +70,7 @@ def _dict_merge(a, b):
     result = deepcopy(a)
     for k, v in b.iteritems():
         if k in result and isinstance(result[k], dict):
-                result[k] = _dict_merge(result[k], v)
+            result[k] = _dict_merge(result[k], v)
         else:
             result[k] = deepcopy(v)
     return result
