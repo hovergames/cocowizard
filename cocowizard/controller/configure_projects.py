@@ -44,6 +44,13 @@ def _configure_ios():
         debug("Search for all files in: %s" % folder)
         queue = set(folder.walkfiles())
 
+        hidden_files = lambda x: not x.split("/")[-1].startswith(".")
+        queue = filter(hidden_files, queue)
+        queue = sorted(queue)
+
+        if len(queue) == 0:
+            continue
+
         debug("Add all found files to the XCode project")
         xcode_add_source(pbxproj, _in="\n".join(queue))
 
