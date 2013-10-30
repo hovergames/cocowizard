@@ -20,9 +20,10 @@ def run():
     _ensure_installed()
     _android_configure()
 
-    debug("ios")
-    with indent():
-        _ios_configure()
+    if config.has("libraries.avalon.ios"):
+        debug("ios")
+        with indent():
+            _ios_configure()
 
 def _ensure_installed():
     vendors_dir = path("Vendors").realpath()
