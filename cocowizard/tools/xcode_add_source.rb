@@ -72,28 +72,31 @@ def addFile(path)
         child["path"]
     end
 
-    if child_paths.include?("../" + path)
+    path = "../" + path
+    if child_paths.include?(path)
         return
     end
 
     add_to_build = false
     link_file = false
+    add_to_bundle = false
 
     def configure_build_settings(key, path)
-        path = File.dirname "$(SRCROOT)/../" + path
+        path = File.dirname "$(SRCROOT)/" + path
         build_settings "add", key, path
     end
 
-    fileType = "sourcecode.cpp.cpp"
-    if fileName =~ /.cpp$/       then fileType = "sourcecode.cpp.cpp"    ; add_to_build = true  ; end
-    if fileName =~ /.h$/         then fileType = "sourcecode.cpp.h"      ; end
-    if fileName =~ /.mm$/        then fileType = "sourcecode.cpp.objcpp" ; add_to_build = true  ; end
-    if fileName =~ /.c$/         then fileType = "sourcecode.cpp.c"      ; add_to_build = true  ; end
-    if fileName =~ /.bundle$/    then fileType = "wrapper.plug-in"       ; end
-    if fileName =~ /.a$/         then fileType = "archive.ar"            ; link_file = true     ; configure_build_settings "LIBRARY_SEARCH_PATHS"  , path; end
-    if fileName =~ /.framework$/ then fileType = "wrapper.framework"     ; link_file = true     ; configure_build_settings "FRAMEWORK_SEARCH_PATHS", path; end
+    fileType = "text"
+    if fileName =~ /\.cpp$/             then fileType = "sourcecode.cpp.cpp"    ; add_to_build = true  ; end
+    if fileName =~ /\.h$/               then fileType = "sourcecode.cpp.h"      ; end
+    if fileName =~ /\.mm$/              then fileType = "sourcecode.cpp.objcpp" ; add_to_build = true  ; end
+    if fileName =~ /\.c$/               then fileType = "sourcecode.cpp.c"      ; add_to_build = true  ; end
+    if fileName =~ /\.bundle$/          then fileType = "wrapper.plug-in"       ; end
+    if fileName =~ /\.a$/               then fileType = "archive.ar"            ; link_file = true     ; configure_build_settings "LIBRARY_SEARCH_PATHS"  , path; end
+    if fileName =~ /\.framework$/       then fileType = "wrapper.framework"     ; link_file = true     ; configure_build_settings "FRAMEWORK_SEARCH_PATHS", path; end
+    if path     =~ /^\.\.\/Resources\// then                                    ; add_to_bundle = true ; path = path[13..-1]; end
 
-    file_ref = $project_file.new_object PBXFileReference, { "path" => "../" + path, "sourceTree" => type,  "lastKnownFileType" => fileType, "name" => fileName }
+    file_ref = $project_file.new_object PBXFileReference, { "path" => path, "sourceTree" => type,  "lastKnownFileType" => fileType, "name" => fileName }
     $project_file.add_object(file_ref)
 
     if add_to_build
@@ -103,6 +106,13 @@ def addFile(path)
         build_phases.each do |phase|
             phase["files"] << build_file.uuid
         end
+    end
+
+    if add_to_bundle
+        build_file = $project_file.new_object PBXBuildFile, { "fileRef" => file_ref.uuid }
+
+        build_phase = $project_file.objects_of_class(PBXResourcesBuildPhase)[1]
+        build_phase["files"] << build_file.uuid
     end
 
     if link_file
@@ -118,7 +128,7 @@ def addFile(path)
 
         $res_buildphase.each do |res|
             res["files"] << build_file.uuid
-        end        
+        end
     end
 
     group["children"] << file_ref.uuid

@@ -36,23 +36,34 @@ def _configure_ios():
     debug("Remove old files in Classes/ and Resources/")
     xcode_clear_classes_and_resources(pbxproj)
 
-    for folder in ["Classes", "Resources"]:
-        folder = path(folder)
-        if not folder.exists():
-            error("Unable to iterate over: %s" % folder)
+    def limit_depth(path):
+        parts = path.split("/")
+        if len(parts) <= 2:
+            return path
+        else:
+            return "/".join(parts[:2])
 
-        debug("Search for all files in: %s" % folder)
-        queue = set(folder.walkfiles())
+    queue = _ios_get_files("Resources")
+    queue = map(limit_depth, queue)
+    queue.extend(_ios_get_files("Classes"))
+    queue = set(queue)
+    queue = sorted(queue)
 
-        hidden_files = lambda x: not x.split("/")[-1].startswith(".")
-        queue = filter(hidden_files, queue)
-        queue = sorted(queue)
-
-        if len(queue) == 0:
-            continue
-
+    if len(queue) > 0:
         debug("Add all found files to the XCode project")
         xcode_add_source(pbxproj, _in="\n".join(queue))
+
+def _ios_get_files(folder):
+    folder = path(folder)
+    if not folder.exists():
+        error("Unable to iterate over: %s" % folder)
+
+    debug("Search for all files in: %s" % folder)
+    queue = set(folder.walkfiles())
+
+    hidden_files = lambda x: not x.split("/")[-1].startswith(".")
+    queue = filter(hidden_files, queue)
+    return sorted(queue)
 
 def _configure_android():
     for flavor in config.android_flavors():
