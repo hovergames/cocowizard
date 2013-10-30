@@ -109,7 +109,7 @@ def _android_copy_java_files(base_dir, flavor):
 
     for feature in _get_avalon_features("android.%s" % flavor):
         for from_dir in [android_dir, flavor_dir]:
-            from_dir = path(from_dir) / "_java" / feature_path
+            from_dir = path(from_dir) / "_java" / feature
             if feature == "gamecenter" and force_amazon_gamecenter:
                 debug("Forcing amazon gamecenter on google")
                 from_dir = path(from_dir.replace("-google", "-amazon"))
