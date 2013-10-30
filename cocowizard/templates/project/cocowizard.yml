@@ -18,7 +18,7 @@ general:
 # >> Libraries are our way to handle third-party stuff within cocowizard. Just
 # >> put all the required configuration here and add some python code to
 # >> cocowizard/libraries/$name_of_the_library.py and everything should be fine.
-libraries:
+# libraries:
 
     # >> Avalon is a collection of various extensions, helper and other
     # >> functions managed by Jochen Heizmann and Michael Contento.
