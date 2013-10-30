@@ -161,8 +161,9 @@ def _ios_add_apple_frameworks(pbxproj):
     if "gamecenter" in features:
         require("GameKit")
 
-    lines = ["%s.framework %d" % (x, y) for x, y in frameworks.items()]
-    xcode_add_system_frameworks(pbxproj, _in="\n".join(lines))
+    if len(frameworks) > 0:
+        lines = ["%s.framework %d" % (x, y) for x, y in frameworks.items()]
+        xcode_add_system_frameworks(pbxproj, _in="\n".join(lines))
 
 def _ios_add_avalon_defines():
     defines = _get_defines("ios")
