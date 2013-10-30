@@ -39,9 +39,9 @@ def _configure_ios():
     for folder in ["Classes", "Resources"]:
         folder = path(folder)
         if not folder.exists():
-            error("Unable to iterate over %s" % folder)
+            error("Unable to iterate over: %s" % folder)
 
-        debug("Search for all files in %s" % folder)
+        debug("Search for all files in: %s" % folder)
         queue = set(folder.walkfiles())
 
         debug("Add all found files to the XCode project")
