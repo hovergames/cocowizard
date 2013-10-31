@@ -10,7 +10,7 @@ from sh import git, cp
 from functools import partial
 
 from ..utils import config
-from ..utils.log import info, warning, debug, indent
+from ..utils.log import info, warning, debug, indent, error
 from ..utils.tools import xcode_add_source, xcode_add_system_frameworks, xcode_build_settings
 
 AVALON_URL = "git@github.com:hovergames/avalon.git"
