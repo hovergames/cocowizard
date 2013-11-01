@@ -111,8 +111,10 @@ def addFile(path)
     if add_to_bundle
         build_file = $project_file.new_object PBXBuildFile, { "fileRef" => file_ref.uuid }
 
-        build_phase = $project_file.objects_of_class(PBXResourcesBuildPhase)[1]
-        build_phase["files"] << build_file.uuid
+        build_phases = $project_file.objects_of_class PBXResourcesBuildPhase
+        build_phases.each do |phase|
+            phase["files"] << build_file.uuid
+        end
     end
 
     if link_file
