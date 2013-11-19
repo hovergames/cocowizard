@@ -5,6 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import re
 from path import path
 import sh
 
@@ -19,6 +20,8 @@ def run():
     _configure_ios_version()
     _configure_ios_orientation()
     _configure_ios_name()
+
+    _configure_mac_resulution_and_title()
 
     _configure_android_name()
     _configure_android_version()
@@ -57,6 +60,18 @@ def _configure_ios_orientation():
         plist_file.write_text(text)
     else:
         error("Orientation in configuration is invalid.")
+
+def _configure_mac_resulution_and_title():
+    cpp_file = _get_proj_dir_ios() / "mac/main.cpp"
+    regex = re.compile(r"eglView.init\(.*\)")
+
+    title = config.get("general.mac.title")
+    resolution = config.get("general.mac.resolution").split("x")
+    template = (title, int(resolution[0]), int(resolution[1]))
+
+    text = cpp_file.text()
+    text = regex.sub("eglView.init(\"%s\", %d, %d)" % template, text)
+    cpp_file.write_text(text)
 
 def _configure_ios_package_name():
     package = config.get("general.package")
