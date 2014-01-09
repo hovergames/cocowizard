@@ -8,8 +8,6 @@ from __future__ import unicode_literals
 import re
 from path import path
 import sh
-import os
-import fnmatch
 
 from ..utils import config
 from ..utils.log import error, debug, indent
@@ -24,26 +22,20 @@ def run():
     _configure_ios_name()
 
     _configure_mac_resulution_and_title()
+    _configure_fonts()
 
     _configure_android_name()
     _configure_android_version()
     _configure_android_orientation()
 
-    _configure_fonts()
-
 def _configure_fonts():
-    res_dir = path("Resources").realpath()
-    fonts = []
-    for root, dirnames, filenames in os.walk(res_dir):
-      for filename in fnmatch.filter(filenames, '*.ttf'):
-          fonts.append(os.path.join(root, filename).replace(res_dir + "/", ""))
+    fonts = [x for x in path("Resources").walkfiles("*.ttf")]
+    search = "<key>UIAppFonts</key>\n\t<array/>"
 
-    search = "<key>UIAppFonts</key>" + "\n\t<array/>"
-
-    replace = "<key>UIAppFonts</key>\n" + "<array>\n"
+    replace = "<key>UIAppFonts</key>\n<array>\n"
     for font in fonts:
-        replace = replace + "<string>" + font + "</string>\n"
-    replace = replace + "</array>\n"
+        replace += "<string>" + font.replace("Resources/", "") + "</string>\n"
+    replace += "</array>\n"
 
     plist_file = _get_proj_dir_ios() / PLIST_FILE
     text = plist_file.text()
