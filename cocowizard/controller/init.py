@@ -17,8 +17,7 @@ TEMPLATES_DIR = root_dir() / "cocowizard" / "templates"
 def run():
     parser = argparse.ArgumentParser()
     parser.add_argument("package_name", help="Specify the package name.")
-    parser.add_argument("cocos_repo_url", help="Specify the cocos2d-x git repository url.")
-    parser.add_argument("branch_name", help="Which branch of cocos2d-x do you want to use?")
+    parser.add_argument("cocos2dx_path", help="Local path to cocos2d-x repository.")
     args = parser.parse_args()
 
     package_name = args.package_name
@@ -27,32 +26,30 @@ def run():
         error("Package name invalid: Use format com.company.project_name")
 
     project_name = ".".join(parts[2:])
-    destination_dir = path(project_name)
-    project_dir = destination_dir / "projects" / project_name
-    if destination_dir.exists():
-        error("Directory '%s' already exists." % destination_dir)
+    project_dir = path(project_name)
+    if project_dir.exists():
+        error("Directory '%s' already exists." % project_dir)
 
-    _clone_cocos2d_repo(destination_dir, args.cocos_repo_url, args.branch_name)
+    if not path(args.cocos2dx_path).exists():
+        error("Invalid cocos2dx path given.")
+
     _create_project_folder(project_dir)
-    _create_default_configuration(project_dir, project_name, package_name)
+    _create_default_configuration(project_dir, project_name, package_name, args.cocos2dx_path)
     _create_git_repo(project_dir)
 
     info("Now go and run 'cocowizard update' in your new project!")
-
-def _clone_cocos2d_repo(destination_dir, cocos_repo_url, branch_name):
-    debug("Initialize cocos2d-x repository")
-    git("clone", "--verbose" ,"--branch", branch_name, cocos_repo_url, destination_dir)
 
 def _create_project_folder(project_dir):
     debug("Copy base project files")
     (TEMPLATES_DIR / "project").copytree(project_dir)
 
-def _create_default_configuration(project_dir, project_name, package_name):
+def _create_default_configuration(project_dir, project_name, package_name, cocos2dx_path):
     debug("Initialize yaml configuration")
     yml_file = project_dir / "cocowizard.yml"
     text = yml_file.text()
     text = text.replace("{project_name}", project_name)
     text = text.replace("{package_name}", package_name)
+    text = text.replace("{cocos2dx_path}", path(cocos2dx_path).realpath())
     yml_file.write_text(text)
 
 def _create_git_repo(project_dir):
