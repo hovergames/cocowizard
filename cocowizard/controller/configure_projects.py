@@ -93,7 +93,7 @@ def _set_ant_keys(base_dir, flavor):
 
 def _ensure_local_properties(base_dir, flavor):
     local = base_dir / "local.properties"
-    cocos = base_dir / "../../../cocos/2d/platform/android/java/local.properties"
+    cocos = base_dir / "../cocos2d/cocos/2d/platform/android/java/local.properties"
     text = "sdk.dir=%s\n" % config.get("general.android.sdk_dir")
 
     for dst in [local, cocos]:
