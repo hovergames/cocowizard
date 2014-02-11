@@ -37,7 +37,7 @@ def _create_project():
     creator = sh.Command(creator_orig)
     stdout = creator(n=project, k=package, l="cpp", p=_project_path(), _cwd=creator_dir)
 
-    if "Have Fun!" not in stdout:
+    if "A new project was created in" not in stdout:
         debug(stdout)
         error("Run of create_project.py failed")
 
