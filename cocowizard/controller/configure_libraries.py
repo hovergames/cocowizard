@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 
 import argparse
 
+from ..library import github_loader
 from ..utils import config
 from ..utils.log import debug, error, indent
 
@@ -36,6 +37,8 @@ def _configure(library):
         with indent():
             module.run()
     except ImportError as e:
-        debug(e)
-        error("Unable to load library configurator")
-
+        if "/" in library:
+            github_loader.run(library)
+        else:
+            debug(e)
+            error("Unable to load library configurator")
