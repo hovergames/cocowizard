@@ -9,6 +9,7 @@ from functools import partial
 
 from path import path
 from sh import git
+from yaml import load as yaml_load
 
 from ..utils import config
 from ..utils.log import info, warning, debug, indent, error
@@ -20,37 +21,43 @@ def run(name):
 
     library_dir = _ensure_installed(name)
     _fail_on_missing_src_folder(name, library_dir)
-    _ios_configure(name, library_dir)
-    _process_requirements(library_dir)
 
-def _ios_configure(name, library_dir):
+    library_config = _get_library_config(library_dir)
+    _ios_configure(name, library_dir, library_config)
+    _process_requirements(library_dir, library_config)
+
+def _get_library_config(library_dir):
+    library_config_file = library_dir / "cocowizard.yml"
+    if not library_config_file.exists():
+        return dict()
+
+    stream = open(library_config_file, 'r')
+    return yaml_load(stream)
+
+def _ios_configure(name, library_dir, library_config):
     pbxproj = path("proj.ios_mac/%s.xcodeproj/project.pbxproj" % config.get("general.project")).realpath()
     if not pbxproj.exists():
         error("pbxproject file not found -- iOS project present?")
 
     _ios_add_files(pbxproj, library_dir)
-    _ios_add_apple_frameworks(pbxproj, library_dir)
-    xcode_build_settings(pbxproj, "add", "HEADER_SEARCH_PATHS", "$(SRCROOT)/../Vendors/")
+    _ios_add_apple_frameworks(pbxproj, library_dir, library_config)
 
-def _ios_add_apple_frameworks(pbxproj, library_dir):
-    frameworks = library_dir / "cocowizard_apple_frameworks.txt"
-    if not frameworks.exists():
-        debug("No apple framework dependency file found ...")
-        return
+    search = "$(SRCROOT)/../Vendors/"
+    if library_config.get("remove_collision_guard", False):
+        search += "%s/src/" % name
+    xcode_build_settings(pbxproj, "add", "HEADER_SEARCH_PATHS", search)
 
+def _ios_add_apple_frameworks(pbxproj, library_dir, library_config):
     lines = []
-    for name in frameworks.lines():
-        name = name.strip()
-        if "[optional]" in name:
-            name = name.replace("[optional]", "").strip()
-            optional = True
-        else:
-            optional = False
+    for mode, frameworks in library_config.get("apple_frameworks", dict()).items():
+        required = mode.lower() == "required"
 
-        debug("Add apple framework: %s (optional: %s)" % (name, optional))
-        lines.append("%s.framework %d" % (name, optional))
+        for name in frameworks:
+            debug("Add apple framework: %s (required: %s)" % (name, required))
+            lines.append("%s.framework %d" % (name, required))
 
-    xcode_add_system_frameworks(pbxproj, _in="\n".join(lines))
+    if lines:
+        xcode_add_system_frameworks(pbxproj, _in="\n".join(lines))
 
 def _ios_add_files(pbxproj, library_dir):
     files = _ios_get_files(library_dir)
@@ -113,15 +120,8 @@ def _ensure_installed(name):
 
     return library_dir
 
-def _process_requirements(library_dir):
-    requirements = library_dir / "cocowizard_requirements.txt"
-    if not requirements.exists():
-        debug("No requirements file found ...")
-        return
-
-    for name in requirements.lines():
-        name = name.strip()
-
+def _process_requirements(library_dir, library_config):
+    for name in library_config.get("requirements", []):
         debug("Process requirement: %s" % name)
         with indent():
             run(name)
@@ -135,7 +135,6 @@ def _add_git_submodule(name, git_dir):
     warning("Do not interrupt this process!")
 
     git_url = "git@github.com:%s.git" % name
-    git_url = "/Users/michaelcontento/Workspace/foo/%s" % name.replace("avalon/", "")
     git_ref = "HEAD"
 
     debug("Add %s as submodule" % name)
