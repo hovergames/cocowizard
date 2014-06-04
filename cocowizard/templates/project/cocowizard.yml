@@ -71,59 +71,25 @@ general:
                 # - AVALON_CONFIG_GAMECENTER_ENABLED
                 # - AVALON_CONFIG_PAYMENT_ENABLED
 
-# !! Configure this in: ~/.cocowizard.yml
-# icons:
-#     ios:
-#         settings:
-#             overlay: True
-#             mask: False
-#         sizes:
-#             29: png
-#             40: png
-#             50: png
-#             57: png
-#             58: png
-#             72: png
-#             76: png
-#             80: png
-#             100: png
-#             114: png
-#             120: png
-#             144: png
-#             152: png
-#             1024: png
-#     android.google:
-#         settings:
-#             overlay: True
-#             mask: True
-#         sizes:
-#             32: png
-#             36: png
-#             48: png
-#             72: png
-#             96: png
-#             512: png
-#     android.amazon:
-#         settings:
-#             overlay: True
-#             mask: True
-#         sizes:
-#             32: png
-#             36: png
-#             48: png
-#             72: png
-#             96: png
-#             114: png
-#             512: png
-#     android.samsung:
-#         settings:
-#             overlay: True
-#             mask: True
-#         sizes:
-#             32: png
-#             36: png
-#             48: png
-#             72: png
-#             96: png
-#             135: jpeg
-#             512: png
+icons:
+    ios:
+        overlay: True
+        mask: False
+        sizes:
+            png: [29, 40, 50, 57, 58, 72, 76, 80, 100, 114, 120, 144, 152, 1024]
+    android.google:
+        overlay: True
+        mask: True
+        sizes:
+            png: [32, 36, 48, 72, 96, 512]
+    android.amazon:
+        overlay: True
+        mask: True
+        sizes:
+            png: [32, 36, 48, 72, 96, 114, 512]
+    android.samsung:
+        overlay: True
+        mask: True
+        sizes:
+            png: [32, 36, 48, 72, 96, 512]
+            jpeg: [135]

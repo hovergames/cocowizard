@@ -52,10 +52,10 @@ def run():
         if not store_dir.exists():
             store_dir.makedirs_p()
 
-        overlay = store["settings"]["overlay"]
-        mask = store["settings"]["mask"]
+        overlay = store["overlay"]
+        mask = store["mask"]
 
-        for size, ext in store["sizes"].items():
+        for ext, sizes in store["sizes"].items():
             ext = ext.lower()
             if overlay:
                 if mask and ext == "png":
@@ -68,8 +68,9 @@ def run():
                 else:
                     store_icon = icon
 
-            filename = store_dir / "icon-%s.%s" % (size, ext)
-            debug("create: %s" % filename)
+            for size in sizes:
+                filename = store_dir / "icon-%s.%s" % (size, ext)
+                debug("create: %s" % filename)
 
-            store_icon = store_icon.resize((size, size), Image.ANTIALIAS)
-            store_icon.save(filename, ext, quality=100, optimize=True, progressive=True)
+                store_icon = store_icon.resize((size, size), Image.ANTIALIAS)
+                store_icon.save(filename, ext, quality=100, optimize=True, progressive=True)
