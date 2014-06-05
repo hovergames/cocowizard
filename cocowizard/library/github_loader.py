@@ -15,14 +15,9 @@ from ..utils import config
 from ..utils.log import info, warning, debug, indent, error
 from ..utils.tools import xcode_add_source, xcode_add_system_frameworks, xcode_build_settings
 
-FIRST_RUN = True
+UNIQUE_NAMES = set()
 
 def run(name):
-    global FIRST_RUN
-    if FIRST_RUN:
-        FIRST_RUN = False
-        _ios_clear_defines()
-
     name = name.lower()
 
     library_dir = _ensure_installed(name)
@@ -56,7 +51,14 @@ def _ios_configure(name, library_dir, library_config):
 
     _ios_add_define(name)
 
-def _ios_clear_defines():
+def _ios_add_define(name):
+    name = name.upper().replace("-", "_").replace("/", "_")
+
+    global UNIQUE_NAMES
+    UNIQUE_NAMES.add(name)
+
+    defines = map(lambda x: "#define COCOWIZARD_%s 1" % x, UNIQUE_NAMES)
+
     for target in ["ios", "mac"]:
         prefix_file = path("proj.ios_mac/%s/Prefix.pch" % target).realpath()
         if not prefix_file.exists():
@@ -65,22 +67,7 @@ def _ios_clear_defines():
 
         text = prefix_file.text().split("\n")
         text = filter(lambda x: "COCOWIZARD_" not in x, text)
-
-        debug("Configure: %s" % prefix_file)
-        prefix_file.write_text("\n".join(text))
-
-def _ios_add_define(name):
-    name = name.upper().replace("-", "_").replace("/", "_")
-    define = "#define COCOWIZARD_%s 1" % name
-
-    for target in ["ios", "mac"]:
-        prefix_file = path("proj.ios_mac/%s/Prefix.pch" % target).realpath()
-        if not prefix_file.exists():
-            error("Prefix.pch for target %s not found" % target)
-            continue
-
-        text = prefix_file.text().split("\n")
-        text.append(define)
+        text.extend(defines)
 
         debug("Configure: %s" % prefix_file)
         prefix_file.write_text("\n".join(text))
