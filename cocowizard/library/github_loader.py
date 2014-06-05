@@ -121,7 +121,11 @@ def _ensure_installed(name):
     return library_dir
 
 def _process_requirements(library_dir, library_config):
-    for name in library_config.get("requirements", []):
+    requirements = library_config.get("requirements", [])
+    if not isinstance(requirements, list):
+        error("requirements in cocowizard.yml must be a list!")
+
+    for name in requirements:
         debug("Process requirement: %s" % name)
         with indent():
             run(name)

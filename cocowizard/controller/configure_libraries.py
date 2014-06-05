@@ -16,10 +16,15 @@ def run():
     parser.add_argument("name", nargs="?", default="all", help="name of the library to configure (default: all)")
     args = parser.parse_args()
 
-    libs = config.get("libraries")
-    if libs is None:
+    libs = config.get("libraries", [])
+    if not libs:
         debug("No library configured yet")
         return
+
+    if isinstance(libs, str):
+        libs = [libs]
+    if not isinstance(libs, list):
+        error("libraries in cocowizard.yml must be a list")
 
     if args.name == "all":
         for name in libs:
