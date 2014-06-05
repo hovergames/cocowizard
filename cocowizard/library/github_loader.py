@@ -16,7 +16,10 @@ from ..utils.log import info, warning, debug, indent, error
 from ..utils.tools import xcode_add_source, xcode_add_system_frameworks, xcode_build_settings
 
 
-def run(name):
+def run(name, dependency=False):
+    if not dependency:
+        _ios_clear_defines()
+
     name = name.lower()
 
     library_dir = _ensure_installed(name)
@@ -46,6 +49,37 @@ def _ios_configure(name, library_dir, library_config):
     if library_config.get("remove_collision_guard", False):
         search += "%s/src/" % name
     xcode_build_settings(pbxproj, "add", "HEADER_SEARCH_PATHS", search)
+
+    _ios_add_define(name)
+
+def _ios_clear_defines():
+    for target in ["ios", "mac"]:
+        prefix_file = path("proj.ios_mac/%s/Prefix.pch" % target).realpath()
+        if not prefix_file.exists():
+            error("Prefix.pch for target %s not found" % target)
+            continue
+
+        text = prefix_file.text().split("\n")
+        text = filter(lambda x: "COCOWIZARD_" not in x, text)
+
+        debug("Configure: %s" % prefix_file)
+        prefix_file.write_text("\n".join(text))
+
+def _ios_add_define(name):
+    name = name.upper().replace("-", "_").replace("/", "_")
+    define = "#define COCOWIZARD_%s 1" % name
+
+    for target in ["ios", "mac"]:
+        prefix_file = path("proj.ios_mac/%s/Prefix.pch" % target).realpath()
+        if not prefix_file.exists():
+            error("Prefix.pch for target %s not found" % target)
+            continue
+
+        text = prefix_file.text().split("\n")
+        text.append(define)
+
+        debug("Configure: %s" % prefix_file)
+        prefix_file.write_text("\n".join(text))
 
 def _ios_add_apple_frameworks(pbxproj, library_dir, library_config):
     lines = []
@@ -128,7 +162,7 @@ def _process_requirements(library_dir, library_config):
     for name in requirements:
         debug("Process requirement: %s" % name)
         with indent():
-            run(name)
+            run(name, dependency=True)
 
 def _fail_on_missing_src_folder(name, library_dir):
     if not (library_dir / "src").isdir():
