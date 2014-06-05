@@ -15,9 +15,12 @@ from ..utils import config
 from ..utils.log import info, warning, debug, indent, error
 from ..utils.tools import xcode_add_source, xcode_add_system_frameworks, xcode_build_settings
 
+FIRST_RUN = True
 
-def run(name, dependency=False):
-    if not dependency:
+def run(name):
+    global FIRST_RUN
+    if FIRST_RUN:
+        FIRST_RUN = False
         _ios_clear_defines()
 
     name = name.lower()
@@ -163,7 +166,7 @@ def _process_requirements(library_dir, library_config):
     for name in requirements:
         debug("Process requirement: %s" % name)
         with indent():
-            run(name, dependency=True)
+            run(name)
 
 def _fail_on_missing_src_folder(name, library_dir):
     if not (library_dir / "src").isdir():
