@@ -42,7 +42,8 @@ def _ios_configure(name, library_dir, library_config):
     if not pbxproj.exists():
         error("pbxproject file not found -- iOS project present?")
 
-    _ios_add_files(pbxproj, library_dir)
+    if not library_config.get("skip_ios_add_files", False):
+        _ios_add_files(pbxproj, library_dir)
     _ios_add_apple_frameworks(pbxproj, library_dir, library_config)
 
     search = "$(SRCROOT)/../Vendors/"
