@@ -26,7 +26,7 @@ def run():
             _configure_android(flavor)
 
 def _get_ios_path():
-    proj_dir = path("proj.ios_mac/ios").realpath()
+    proj_dir = path("proj.ios_mac/ios")
     if not proj_dir.exists():
         error("No ios project generated yet -- try cocowizard update")
     return proj_dir
@@ -62,7 +62,7 @@ def _configure_launch_images_ios():
         (source_dir / image).copy(proj_dir / image)
 
 def _configure_android(flavor):
-    proj_dir = path("proj.android.%s" % flavor).realpath()
+    proj_dir = path("proj.android.%s" % flavor)
     if not proj_dir.exists():
         error("No android project generated yet -- try cocowizard update")
 

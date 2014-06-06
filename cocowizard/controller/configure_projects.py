@@ -29,7 +29,7 @@ def run():
         _configure_ios()
 
 def _configure_ios():
-    pbxproj = path("proj.ios_mac/%s.xcodeproj/project.pbxproj" % config.get("general.project")).realpath()
+    pbxproj = path("proj.ios_mac/%s.xcodeproj/project.pbxproj" % config.get("general.project"))
     if not pbxproj.exists():
         error("pbxproject file not found -- iOS project present?")
 
@@ -97,7 +97,6 @@ def _ensure_local_properties(base_dir, flavor):
     text = "sdk.dir=%s\n" % config.get("general.android.sdk_dir")
 
     for dst in [local, cocos]:
-        dst = dst.realpath()
         debug("Write sdk.dir: %s" % dst)
         dst.write_text(text)
 

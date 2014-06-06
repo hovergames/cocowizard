@@ -43,13 +43,13 @@ def _configure_fonts():
     plist_file.write_text(text)
 
 def _get_proj_dir_ios():
-    proj_dir = path("proj.ios_mac").realpath()
+    proj_dir = path("proj.ios_mac")
     if not proj_dir.exists():
         error("No ios project generated yet -- try cocowizard update")
     return proj_dir
 
 def _get_proj_dir_android(flavor):
-    proj_dir = path("proj.android.%s" % flavor).realpath()
+    proj_dir = path("proj.android.%s" % flavor)
     if not proj_dir.exists():
         error("No android.%s project generated yet -- try cocowizard update" % flavor)
     return proj_dir
