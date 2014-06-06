@@ -64,7 +64,7 @@ def _configure_launch_images_ios():
 def _configure_android(flavor):
     proj_dir = path("proj.android.%s" % flavor)
     if not proj_dir.exists():
-        error("No android project generated yet -- try cocowizard update")
+        error("No android.%s project generated yet -- try cocowizard update" % flavor)
 
     icons_dir = _get_icon_path("android.%s" % flavor)
     for size, mode in ANDROID_SIZES:
