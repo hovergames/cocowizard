@@ -7,7 +7,6 @@ general:
     orientation: landscape  # options: landscape/portrait
 
     android:
-        prefer_amazon_over_google: true
         # !! Configure this in: ~/.cocowizard.yml
         # sdk_dir: ~/android-sdk-macosx
         # key:

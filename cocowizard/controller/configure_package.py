@@ -126,11 +126,9 @@ def _configure_ios_version():
     plist_file.write_text(text)
 
 def _configure_android_version():
-    prefer_amazon = config.get("general.android.prefer_amazon_over_google")
-
+    version_name = str(config.get("general.version"))
     for flavor in config.android_flavors():
-        version_name = str(config.get("general.version"))
-        if flavor == "amazon" and prefer_amazon:
+        if flavor == "amazon":
             version_name += ".0"
         version_code = version_name.replace(".", "")
 
