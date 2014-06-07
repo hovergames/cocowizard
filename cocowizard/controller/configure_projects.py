@@ -107,7 +107,7 @@ def _update_android_mk(base_dir, flavor):
     text = []
 
     for line in mk_file.text().split("\n"):
-        if "LOCAL_SRC_FILES" in line:
+        if "LOCAL_SRC_FILES :=" in line:
             text.append(DYNAMIC_LOCAL_SRC_FILES)
         elif "../../Classes/" in line:
             pass
@@ -125,7 +125,7 @@ def _update_application_mk(base_dir, flavor):
     text = mk_file.text()
 
     text = text.replace("-DCOCOS2D_DEBUG=1", "-DCOCOS2D_DEBUG=0")
-    text += "APP_CPPFLAGS += -O3\n"
+    text += "\nAPP_CPPFLAGS += -O3\n"
     text += "APP_CPPFLAGS += -DNDEBUG\n"
     text += "APP_OPTIM := release\n"
 
