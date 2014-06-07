@@ -74,7 +74,6 @@ def _configure_android():
             base_dir = path("proj.android.%s" % flavor)
             _ensure_local_properties(base_dir, flavor)
             _update_android_mk(base_dir, flavor)
-            _update_application_mk(base_dir, flavor)
             _set_ant_keys(base_dir, flavor)
 
 def _set_ant_keys(base_dir, flavor):
@@ -95,7 +94,7 @@ def _set_ant_keys(base_dir, flavor):
 
 def _ensure_local_properties(base_dir, flavor):
     local = base_dir / "local.properties"
-    cocos = base_dir / "../cocos2d/cocos/2d/platform/android/java/local.properties"
+    cocos = base_dir / "../cocos2d/cocos/platform/android/java/local.properties"
     text = "sdk.dir=%s\n" % config.get("general.android.sdk_dir")
 
     for dst in [local, cocos]:
@@ -119,15 +118,3 @@ def _update_android_mk(base_dir, flavor):
 
     debug("Configure: %s" % mk_file)
     mk_file.write_text("\n".join(text))
-
-def _update_application_mk(base_dir, flavor):
-    mk_file = base_dir / "jni" / "Application.mk"
-    text = mk_file.text()
-
-    text = text.replace("-DCOCOS2D_DEBUG=1", "-DCOCOS2D_DEBUG=0")
-    text += "\nAPP_CPPFLAGS += -O3\n"
-    text += "APP_CPPFLAGS += -DNDEBUG\n"
-    text += "APP_OPTIM := release\n"
-
-    debug("Configure: %s" % mk_file)
-    mk_file.write_text(text)

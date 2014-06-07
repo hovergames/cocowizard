@@ -45,10 +45,12 @@ def _create_project_folder(project_dir):
 
 def _create_default_configuration(project_dir, project_name, package_name, cocos2dx_path):
     debug("Initialize yaml configuration")
+    home_path = path("~/").expanduser()
     yml_file = project_dir / "cocowizard.yml"
     text = yml_file.text()
     text = text.replace("{project_name}", project_name)
     text = text.replace("{package_name}", package_name)
+    text = text.replace("{home_path}", str(home_path).rstrip("/"))
     text = text.replace("{cocos2dx_path}", path(cocos2dx_path).realpath())
     yml_file.write_text(text)
 

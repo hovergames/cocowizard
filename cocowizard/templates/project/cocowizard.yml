@@ -7,9 +7,9 @@ general:
     orientation: landscape  # options: landscape/portrait
 
     android:
-        sdk_dir: ~/android-sdk-macosx
+        sdk_dir: {home_path}/android-sdk-macosx
         key:
-            store: ~/android.keystore
+            store: {home_path}/android.keystore
             store_password: pass
             alias: alias
             alias_password: pass

@@ -80,7 +80,6 @@ class Config(object):
             return self._name_to_tuple(deps)
         elif isinstance(deps, list):
             deps = map(self._convert_entries, deps)
-            deps = [x[0] for x in deps]
             return deps
         else:
             error("Config dependency must be a list")
@@ -106,7 +105,7 @@ class Config(object):
         name = name.lower()
         url = "git@github.com:%s.git" % name
         ref = "HEAD"
-        return [(name, url, ref)]
+        return (name, url, ref)
 
     def _convert_entries(self, entry):
         if isinstance(entry, str):
@@ -114,6 +113,8 @@ class Config(object):
         elif isinstance(entry, dict):
             name = entry.keys()[0]
             entry = entry[name]
+            if not entry:
+                entry = dict()
 
             name, url, ref = self._name_to_tuple(name)
             url = entry.get("url", url)

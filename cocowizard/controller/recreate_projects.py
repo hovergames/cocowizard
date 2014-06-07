@@ -28,16 +28,16 @@ def _create_project():
     project = config.get("general.project")
 
     cocos2dx_path = path(config.get("general.cocos2dx"))
-    creator_dir = cocos2dx_path / "tools" / "project-creator"
-    creator_orig = creator_dir / "create_project.py"
+    creator_dir = cocos2dx_path / "tools" / "cocos2d-console"
+    creator_orig = creator_dir / "bin" / "cocos.py"
 
     debug("execute: %s" % creator_orig)
     creator = sh.Command(creator_orig)
-    stdout = creator(n=project, k=package, l="cpp", p=_project_path(), _cwd=creator_dir)
+    stdout = creator("new", project, p=package, l="cpp", d=_project_path(), _cwd=creator_dir)
 
-    if "A new project was created in" not in stdout:
+    if "Replace the project package" not in stdout:
         debug(stdout)
-        error("Run of create_project.py failed")
+        error("Run of 'cocos new' failed")
 
 def _move_project_files():
     project = config.get("general.project")
@@ -59,7 +59,6 @@ def _move_project_files():
         proj_dir = to_dir / "proj.android.%s" % android_flavor
         debug("copy: %s" % proj_dir)
         android_dir.copytree(proj_dir)
-    android_dir.rmtree_p()
 
     # -- Remove some known cocos2d files/folders
 
