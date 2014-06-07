@@ -8,12 +8,10 @@ from __future__ import unicode_literals
 import sys
 from path import path
 from yaml import load as yaml_load
-from copy import deepcopy
 
 from .log import error
 
-CONFIG_NAME = "cocowizard.yml"
-CACHE = None
+CACHE = dict()
 
 def android_flavors():
     return ["google", "samsung", "amazon"]
@@ -21,77 +19,106 @@ def android_flavors():
 def root_dir():
     return (path(sys.argv[0]) / "..").abspath().dirname().realpath()
 
-def fail_on_missing_config():
-    if not exists():
-        error("No project configuration found -- run init first")
-
-def exists():
-    global CONFIG_NAME
-    return path(CONFIG_NAME).exists()
-
-def root():
+def from_file(filename):
     global CACHE
-    if CACHE is None:
-        CACHE = _load()
-    return CACHE
+    if not filename in CACHE:
+        CACHE[filename] = Config(filename)
+    return CACHE[filename]
 
 def has(key):
-    parts = key.split(".")
-    config = root()
-
-    for part in parts:
-        if not isinstance(config, dict) or part not in config:
-            return False
-        config = config[part]
-
-    return True
+    return from_file("cocowizard.yml").has(key)
 
 def get(key, default=None):
-    parts = key.split(".")
-    config = root()
+    return from_file("cocowizard.yml").get(key, default)
 
-    for part in parts:
-        if not isinstance(config, dict) or part not in config:
-            if not default is None:
-                return default
-            else:
-                error(key + " is not configured yet")
-        config = config[part]
+def dependencies():
+    return from_file("cocowizard.yml").dependencies()
 
-    return config
+def apple_frameworks():
+    return from_file("cocowizard.yml").apple_frameworks()
 
-# see: http://www.xormedia.com/recursively-merge-dictionaries-in-python/
-def _dict_merge(a, b):
-    '''recursively merges dict's. not just simple a['key'] = b['key'], if
-    both a and b have a key who's value is a dict then dict_merge is called
-    on both values and the result stored in the returned dictionary.'''
-    if not isinstance(b, dict):
-        return b
-    result = deepcopy(a)
-    for k, v in b.iteritems():
-        if k in result and isinstance(result[k], dict):
-            result[k] = _dict_merge(result[k], v)
+class Config(object):
+    def __init__(self, filename):
+        filename = path(filename)
+        if not filename.exists():
+            error("Unable to load config from %s" % filename)
+
+        stream = open(filename, 'r')
+        self.config = yaml_load(stream)
+
+        if self.config is None:
+            self.config = dict()
+
+    def has(self, key):
+        parts = key.split(".")
+        config = self.config
+
+        for part in parts:
+            if not isinstance(config, dict) or part not in config:
+                return False
+            config = config[part]
+
+        return True
+
+    def get(self, key, default=None):
+        parts = key.split(".")
+        config = self.config
+
+        for part in parts:
+            if not isinstance(config, dict) or part not in config:
+                if not default is None:
+                    return default
+                else:
+                    error(key + " is not configured yet")
+            config = config[part]
+
+        return config
+
+    def dependencies(self):
+        deps = self.config.get("dependencies", [])
+        if isinstance(deps, str):
+            return self._name_to_tuple(deps)
+        elif isinstance(deps, list):
+            deps = map(self._convert_entries, deps)
+            deps = [x[0] for x in deps]
+            return deps
         else:
-            result[k] = deepcopy(v)
-    return result
+            error("Config dependency must be a list")
 
-def _load():
-    fail_on_missing_config()
+    def apple_frameworks(self):
+        frameworks = self.config.get("apple_frameworks", [])
+        if isinstance(frameworks, str):
+            frameworks = [str]
 
-    global_config = dict()
-    local_config = dict()
+        result = []
+        for framework in frameworks:
+            if isinstance(framework, str):
+                name = framework
+                required = True
+            else:
+                name = framework.keys()[0]
+                required = framework[name].get("required", True)
+            result.append((name, required))
 
-    global_config_file = path("$HOME").expand() / "." + CONFIG_NAME
-    if global_config_file.exists():
-        global_stream = open(global_config_file, 'r')
-        global_config = yaml_load(global_stream)
+        return result
 
-    local_config_file = path(CONFIG_NAME)
-    if local_config_file.exists():
-        local_stream = open(local_config_file, 'r')
-        local_config = yaml_load(local_stream)
+    def _name_to_tuple(self, name):
+        name = name.lower()
+        url = "git@github.com:%s.git" % name
+        ref = "HEAD"
+        return [(name, url, ref)]
 
-    if local_config is None:
-        return global_config
-    else:
-        return _dict_merge(global_config, local_config)
+    def _convert_entries(self, entry):
+        if isinstance(entry, str):
+            return self._name_to_tuple(entry)
+        elif isinstance(entry, dict):
+            name = entry.keys()[0]
+            entry = entry[name]
+
+            name, url, ref = self._name_to_tuple(name)
+            url = entry.get("url", url)
+            ref = entry.get("ref", ref)
+
+            return (name, url, ref)
+        else:
+            error("Dependency record must be from type str or dict")

@@ -14,8 +14,6 @@ from ..utils.log import debug, error
 COCOWIZARD_PROJECT = "projects_cocowizard"
 
 def run():
-    config.fail_on_missing_config()
-
     _remove_cocowizard_projects()
     _create_project()
     _move_project_files()

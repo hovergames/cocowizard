@@ -9,7 +9,7 @@ from ..utils import config
 from ..utils.log import indent, info
 
 def run():
-    _pprint(config.root())
+    _pprint(config.from_file("cocowizard.yml"))
 
 def _pprint(config):
     for key, value in config.items():

@@ -10,7 +10,7 @@ from sh import cp
 
 from ..utils import config
 from ..utils.log import debug, indent, error
-from ..utils.tools import xcode_add_source, xcode_clear_classes_and_resources
+from ..utils.tools import xcode_add_source, xcode_add_apple_frameworks, xcode_clear_classes_and_resources
 
 DYNAMIC_LOCAL_SRC_FILES = """LOCAL_SRC_FILES := hellocpp/main.cpp \\
     $(subst $(LOCAL_PATH)/,,$(wildcard $(LOCAL_PATH)/../../Classes/*.cpp)) \\
@@ -35,6 +35,8 @@ def _configure_ios():
 
     debug("Remove old files in Classes/ and Resources/")
     xcode_clear_classes_and_resources(pbxproj)
+
+    xcode_add_apple_frameworks(config, pbxproj)
 
     def limit_depth(path):
         parts = path.split("/")
