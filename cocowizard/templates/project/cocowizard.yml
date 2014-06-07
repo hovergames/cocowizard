@@ -19,7 +19,7 @@ general:
         title: {project_name}
 
 # dependencies:
-#     hovergames/ObjectRetainer:
+#     - hovergames/ObjectRetainer:
 #         url: .... # OPTIONAL: Default is "git@github.com:%NAME%.git"
 #         ref: head # OPTIONAL: Default is "head"
 
