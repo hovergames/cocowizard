@@ -50,3 +50,8 @@ icons:
         sizes:
             png: [32, 36, 48, 72, 96, 512]
             jpeg: [135]
+
+# Only used for dependencies
+skip_ios_add_files: False
+android_ignore_java_files: False
+android_ignore_src_files: False
