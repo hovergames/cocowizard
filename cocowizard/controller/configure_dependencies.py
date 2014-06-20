@@ -69,6 +69,15 @@ def _add_git_submodule(name, git_url, git_ref, git_dir):
         info(chunk, end="")
 
 def _android_configure(name, dependency_dir, dependency_config):
+    def platform_android_only(flavor, path):
+        if "platform/" not in path:
+        	return True
+
+        p1 = "platform/android/"
+        p2 = "platform/android-%s/" % flavor
+        if p1 not in path and p2 not in path:
+            return False
+
     if dependency_config.get("android_ignore_java_files", False):
         all_dirs = []
     else:
@@ -82,8 +91,10 @@ def _android_configure(name, dependency_dir, dependency_config):
     for flavor in config.android_flavors():
         debug("android.%s" % flavor)
         with indent():
+            platform_filter = partial(platform_android_only, flavor)
+            flavor_src_files = filter(platform_filter, src_files)
             base_dir = path("proj.android.%s" % flavor)
-            _android_update_android_mk(base_dir, flavor, name, src_files)
+            _android_update_android_mk(base_dir, flavor, name, flavor_src_files)
             _android_copy_java_files(base_dir, flavor, dependency_dir, all_dirs)
 
 def _android_configure_last():
@@ -174,11 +185,9 @@ def _ios_add_files(pbxproj, dependency_dir):
 
 def _ios_get_files(dependency_dir):
     def platform_ios_only(path):
-        if "avalon/avalon/platform/" not in path:
-            return True
-        if "avalon/avalon/platform/ios/" in path:
-            return True
-        return False
+        if "platform/" in path and "platform/ios/" not in path:
+            return False
+        return True
 
     def trimsplit(haystack, path):
         parts = path.split(haystack)
