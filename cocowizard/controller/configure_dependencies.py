@@ -70,6 +70,7 @@ def _add_git_submodule(name, git_url, git_ref, git_dir):
 
 def _android_configure(name, dependency_dir, dependency_config):
     def platform_android_only(flavor, path):
+        path = path[len(dependency_dir):]
         if "platform/" not in path:
         	return True
 
@@ -185,6 +186,7 @@ def _ios_add_files(pbxproj, dependency_dir):
 
 def _ios_get_files(dependency_dir):
     def platform_ios_only(path):
+        path = path[len(dependency_dir):]
         if "platform/" in path and "platform/ios/" not in path:
             return False
         return True
