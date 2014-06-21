@@ -95,6 +95,7 @@ def addFile(path)
     if fileName =~ /\.a$/               then fileType = "archive.ar"            ; link_file = true     ; configure_build_settings "LIBRARY_SEARCH_PATHS"  , path; end
     if fileName =~ /\.framework$/       then fileType = "wrapper.framework"     ; link_file = true     ; configure_build_settings "FRAMEWORK_SEARCH_PATHS", path; end
     if path     =~ /^\.\.\/Resources\// then                                    ; add_to_bundle = true ; path = path[13..-1]; end
+    if path     =~ /\.embeddedframework\/Resources\// then                      ; add_to_bundle = true ; end
 
     file_ref = $project_file.new_object PBXFileReference, { "path" => path, "sourceTree" => type,  "lastKnownFileType" => fileType, "name" => fileName }
     $project_file.add_object(file_ref)
